@@ -8,7 +8,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * A basic API use class that extends the symfony user interface
  * @author Tyler Hand <https://github.com/tyhand>
  */
-class ApiUser extends UserInterface
+class ApiUser implements UserInterface
 {
     ////////////////
     // PROPERTIES //
@@ -36,7 +36,7 @@ class ApiUser extends UserInterface
      * URI of the application
      * @var string
      */
-    private $applicationURI;
+    private $applicationUri;
 
     /**
      * Description of the application
@@ -198,21 +198,21 @@ class ApiUser extends UserInterface
      *
      * @return string
      */
-    public function getApplicationURI()
+    public function getApplicationUri()
     {
-        return $this->applicationURI;
+        return $this->applicationUri;
     }
 
     /**
      * Set the value of URI of the application
      *
-     * @param string applicationURI
+     * @param string applicationUri
      *
      * @return self
      */
-    public function setApplicationURI($applicationURI)
+    public function setApplicationUri($applicationUri)
     {
-        $this->applicationURI = $applicationURI;
+        $this->applicationUri = $applicationUri;
 
         return $this;
     }

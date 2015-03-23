@@ -1,6 +1,6 @@
 <?php
 
-namespace TyHand\SimpleApiKeyBundle\DependencyInjection;
+namespace TyHand\SimpleApiKeyMongoStorageBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 /**
  * Extension class
  */
-class TyHandSimpleApiKeyExtension extends Extension
+class TyHandSimpleApiKeyMongoStorageExtension extends Extension
 {
     /**
      * Load the configuration settings
@@ -28,7 +28,6 @@ class TyHandSimpleApiKeyExtension extends Extension
         $loader->load('services.yml');
 
         // Put the parameter values into the container
-        $container->setParameter('tyhand.simple_apikey.key_name', $config['key_name']);
-        $container->setParameter('tyhand.simple_apikey.storage_service_name', $config['storage_service']);
+        $container->setParameter('tyhand.simple_apikey_mongo.manager_name', $config['manager']);
     }
 }

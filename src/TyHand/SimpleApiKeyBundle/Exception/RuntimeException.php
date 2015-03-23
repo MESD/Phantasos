@@ -2,8 +2,6 @@
 
 namespace TyHand\SimpleApiKeyBundle\Exception;
 
-use TyHand\SimpleApiKeyBundle\ExceptionInterface;
-
 /**
  * Taken from Symfony's components exception setup
  */

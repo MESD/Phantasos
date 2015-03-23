@@ -16,7 +16,7 @@ interface ApiKeyStorageInterface
      * @param ApiUser $apiUser The new API User object to persist
      * @return boolean The success of the operation
      */
-    public function createNewEntry($apiUser);
+    public function createNewEntry(ApiUser $apiUser);
 
     /**
      * Load the api user by the application name

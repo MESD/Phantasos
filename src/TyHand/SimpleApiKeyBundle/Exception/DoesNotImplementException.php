@@ -2,14 +2,12 @@
 
 namespace TyHand\SimpleApiKeyBundle\Exception;
 
-use TyHand\SimpleApiKeyBundle\Exception\RuntimeException;
-
 /**
  * Exception for when a given service does not have the necessary interface
  *
  * @author Tyler Hand <https://github.com/tyhand>
  */
-class DoesNotImplementException extends RuntimeExcepton
+class DoesNotImplementException extends RuntimeException
 {
     ////////////////
     // PROPERTIES //

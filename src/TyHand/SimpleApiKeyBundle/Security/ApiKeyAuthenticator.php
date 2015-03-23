@@ -12,14 +12,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
-use TyHand\SimpleApiKeyBundle\Security\ApiKeyUserProvider
-use TyHand\SimpleApiKeyBundle\Type\
+use TyHand\SimpleApiKeyBundle\Security\ApiKeyUserProvider;
 
 /**
  * Authenticates an API key
  *   Based on the API key Authenticator in the Symfony cookbook
  */
-class ApiKeyAuthenticator implements 
+class ApiKeyAuthenticator implements
     SimlePreAuthenticatorInterface,
     AuthenticationFailureHandlerInterface
 {
@@ -95,15 +94,25 @@ class ApiKeyAuthenticator implements
 
         // Check that the app name exists
         if (null === $appName) {
-            throw new AuthenticationException(sprintf('API Key for "%s" does not exist.', $apiKey));
+            throw new AuthenticationException(
+                sprintf('API Key for "%s" does not exist.', $apiKey)
+            );
         }
 
         // Load the api user
         $apiUser = $this->userProvider->loadUserByUsername($appName);
 
+        // Check that the user is active
+        if (!($apiUser->getActive())) {
+            throw new AuthenticationException(
+                sprintf('API user "%s" marked as inactive.',
+                $apiUser->getApplicationName())
+            );
+        }
+
         // Return a new token
         return new PreAuthenticatedToken(
-            $apiUser, $apiKey, $providerKey, $user->getRoles()
+            $apiUser, $apiKey, $providerKey, $apiUser->getRoles()
         );
     }
 
