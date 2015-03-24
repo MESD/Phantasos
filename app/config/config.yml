@@ -25,9 +25,6 @@ framework:
     fragments:       ~
     http_method_override: true
 
-ty_hand_simple_api_key:
-    storage_service: nonononono
-
 # Twig Configuration
 twig:
     debug:            "%kernel.debug%"

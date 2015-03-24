@@ -1,12 +1,17 @@
 security:
     providers:
-        in_memory:
-            memory: ~
+        api_key_user_provider:
+            id: tyhand.simple_apikey.user_provider
 
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt|error)|css|images|js)/
             security: false
+        secured_area:
+            pattern: ^/
+            stateless: true
+            simple_preauth:
+                authenticator: tyhand.simple_apikey.authenticator
 
         default:
             anonymous: ~

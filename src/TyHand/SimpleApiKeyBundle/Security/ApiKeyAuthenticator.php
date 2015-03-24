@@ -19,7 +19,7 @@ use TyHand\SimpleApiKeyBundle\Security\ApiKeyUserProvider;
  *   Based on the API key Authenticator in the Symfony cookbook
  */
 class ApiKeyAuthenticator implements
-    SimlePreAuthenticatorInterface,
+    SimplePreAuthenticatorInterface,
     AuthenticationFailureHandlerInterface
 {
     ////////////////
@@ -75,7 +75,7 @@ class ApiKeyAuthenticator implements
         }
 
         // Return the pre authenticated token
-        return new PreAuthenticatedToaken('anon.', $apiKey, $providerKey);
+        return new PreAuthenticatedToken('anon.', $apiKey, $providerKey);
     }
 
     /**
@@ -124,7 +124,7 @@ class ApiKeyAuthenticator implements
     public function supportsToken(TokenInterface $token, $providerKey)
     {
         return $token instanceof PreAuthenticatedToken
-            && $token->providerKey() === $providerKey;
+            && $token->getProviderKey() === $providerKey;
     }
 
     /**
@@ -137,6 +137,6 @@ class ApiKeyAuthenticator implements
         Request $request,
         AuthenticationException $exception)
     {
-        return new Response('Authentication Failed.', 403);
+        return new Response('Authentication Failed. ', 403);
     }
 }

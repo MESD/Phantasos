@@ -2,15 +2,16 @@
 
 namespace TyHand\SimpleApiKeyMongoStorageBundle\Storage;
 
-use TyHand\SimpleApiKeyBundle\Stroage\ApiKeyStorageInterface;
+use TyHand\SimpleApiKeyBundle\Storage\ApiKeyStorageInterface;
 use TyHand\SimpleApiKeyBundle\User\ApiUser;
 use TyHand\SimpleApiKeyMongoStorageBundle\Storage\ManagerGrabber;
+use TyHand\SimpleApiKeyMongoStorageBundle\Util\ApiUserToDocumentConverter;
 use Doctrine\ODM\MongoDB\DocumentManager;
 
 /**
  * Api Key storage with MongoDB
  */
-class MongoApiKeyStorage
+class MongoApiKeyStorage implements ApiKeyStorageInterface
 {
     ////////////////
     // PROPERTIES //
@@ -48,7 +49,7 @@ class MongoApiKeyStorage
     public function createNewEntry(ApiUser $apiUser)
     {
         // Convert to the child class
-        $document = ApiUserToDocumentConverter::ConvertToNewDocument($apiUser);
+        $document = ApiUserToDocumentConverter::ConvertToNewDocument($apiUser);;
 
         // Persist and save
         $this->documentManager->persist($document);
@@ -63,9 +64,15 @@ class MongoApiKeyStorage
     public function loadApiUserByAppName($appName)
     {
         // Find an ApiUser Document by app name
-        return $this->documentManager
+        $apiUser = $this->documentManager
             ->getRepository('TyHandSimpleApiKeyMongoStorageBundle:ApiUserDocument')
-            ->findOneByApplicationName($appName);
+            ->findOneByApplicationName($appName)
+        ;
+        if (null !== $apiUser) {
+            $apiUser->setLastUse(new \DateTime());
+            $this->documentManager->flush($apiUser);
+        }
+        return $apiUser;
     }
 
     /**

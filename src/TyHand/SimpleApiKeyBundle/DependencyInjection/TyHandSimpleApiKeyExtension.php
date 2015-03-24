@@ -15,9 +15,7 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 class TyHandSimpleApiKeyExtension extends Extension
 {
     /**
-     * Load the configuration settings
-     * @param  array            $configs   Configuration settings
-     * @param  ContainerBuilder $container Container Builder
+     * @see Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {

@@ -2,7 +2,7 @@
 
 namespace TyHand\SimpleApiKeyMongoStorageBundle\Util;
 
-use TyHand\SimpleApiKeyBundle\User\ApiUser;
+use TyHand\SimpleApiKeyBundle\User\ApiUserInterface;
 use TyHand\SimpleApiKeyMongoStorageBundle\Document\ApiUserDocument;
 
 /**
@@ -17,10 +17,10 @@ class ApiUserToDocumentConverter
 
     /**
      * Create a new ApiUserDocument from an ApiUser object
-     * @param ApiUser $parent ApiUser to convert
+     * @param ApiUserInterface $parent ApiUser to convert
      * @return ApiUserDocument
      */
-    public static function convertToNewDocument(ApiUser $parent)
+    public static function convertToNewDocument(ApiUserInterface $parent)
     {
         // Create the new document
         $document = new ApiUserDocument();

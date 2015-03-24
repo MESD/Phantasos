@@ -18,49 +18,49 @@ class ApiUser implements UserInterface
      * Whether the application is active
      * @var boolean
      */
-    private $active;
+    protected $active;
 
     /**
      * API Key
      * @var string
      */
-    private $apiKey;
+    protected $apiKey;
 
     /**
      * Name of the application
      * @var string
      */
-    private $applicationName;
+    protected $applicationName;
 
     /**
      * URI of the application
      * @var string
      */
-    private $applicationUri;
+    protected $applicationUri;
 
     /**
      * Description of the application
      * @var string
      */
-    private $applicationDescription;
+    protected $applicationDescription;
 
     /**
      * Email of the point of contact for the application
      * @var string
      */
-    private $contactEmail;
+    protected $contactEmail;
 
     /**
      * Name of the point of contact for the application
      * @var string
      */
-    private $contactName;
+    protected $contactName;
 
     /**
      * List of roles the application has
      * @var array
      */
-    private $roles;
+    protected $roles;
 
     /////////////////
     // CONSTRUCTOR //
