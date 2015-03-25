@@ -70,6 +70,12 @@ class ApiUserDocument extends ApiUser
      */
     protected $lastUse;
 
+    /**
+     * API Key Salt
+     * @MongoDB\String
+     */
+    protected $salt;
+
     ///////////////////////////////////
     // GENERATED GETTERS AND SETTERS //
     ///////////////////////////////////
@@ -300,4 +306,28 @@ class ApiUserDocument extends ApiUser
         return $this;
     }
 
-}
+
+    /**
+     * Get the value of API Key Salt
+     *
+     * @return @MongoDB\String
+     */
+    public function getSalt()
+    {
+        return $this->salt;
+    }
+
+    /**
+     * Set the value of API Key Salt
+     *
+     * @param string
+     *
+     * @return self
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
+ }

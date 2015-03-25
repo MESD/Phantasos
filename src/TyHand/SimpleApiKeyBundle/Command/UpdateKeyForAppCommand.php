@@ -45,7 +45,12 @@ class UpdateKeyForAppCommand extends ContainerAwareCommand
 
         // Print out the API key
         if (null === $apiUser) {
-            $output->writeln(sprintf('<error>No registration exists for %s</error>', $appName));
+            $output->writeln(
+                sprintf(
+                    '<error>No registration exists for %s</error>',
+                    $appName
+                )
+            );
         } else {
             // Generate a new key
             $key = $this

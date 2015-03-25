@@ -62,6 +62,12 @@ class ApiUser implements UserInterface
      */
     protected $roles;
 
+    /**
+     * Salt for a bit better security
+     * @var string
+     */
+    protected $salt;
+
     /////////////////
     // CONSTRUCTOR //
     /////////////////
@@ -97,7 +103,7 @@ class ApiUser implements UserInterface
     public function getSalt()
     {
         // No salt
-        return null;
+        return $this->salt;
     }
 
     /**
@@ -313,4 +319,18 @@ class ApiUser implements UserInterface
         return $this;
     }
 
+
+    /**
+     * Set the value of Salt for a bit better security
+     *
+     * @param string salt
+     *
+     * @return self
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
 }
