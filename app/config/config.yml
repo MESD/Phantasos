@@ -55,6 +55,13 @@ doctrine_mongodb:
     document_managers:
         default:
             auto_mapping: true
+            mappings:
+                storage_module:
+                    type: annotation
+                    dir: "%kernel.root_dir%/../src/Component/Storage/Document"
+                    prefix: Component\Storage\Document
+                    alias: Storage
+                    is_bundle: false
 
 # Swiftmailer Configuration
 swiftmailer:

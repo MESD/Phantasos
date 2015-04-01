@@ -19,7 +19,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new TyHand\SimpleApiKeyBundle\TyHandSimpleApiKeyBundle(),
             new TyHand\SimpleApiKeyMongoStorageBundle\TyHandSimpleApiKeyMongoStorageBundle(),
-            new AppBundle\AppBundle(),
+            new AppBundle\AppBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

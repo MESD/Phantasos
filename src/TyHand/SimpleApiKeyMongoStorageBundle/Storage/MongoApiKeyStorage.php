@@ -49,7 +49,7 @@ class MongoApiKeyStorage implements ApiKeyStorageInterface
     public function createNewEntry(ApiUser $apiUser)
     {
         // Convert to the child class
-        $document = ApiUserToDocumentConverter::ConvertToNewDocument($apiUser);;
+        $document = ApiUserToDocumentConverter::ConvertToNewDocument($apiUser);
 
         // Persist and save
         $this->documentManager->persist($document);
@@ -68,6 +68,7 @@ class MongoApiKeyStorage implements ApiKeyStorageInterface
             ->getRepository('TyHandSimpleApiKeyMongoStorageBundle:ApiUserDocument')
             ->findOneByApplicationName($appName)
         ;
+
         if (null !== $apiUser) {
             $apiUser->setLastUse(new \DateTime());
             $this->documentManager->flush($apiUser);
