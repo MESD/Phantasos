@@ -58,6 +58,12 @@ class Media
     private $mediaType;
 
     /**
+     * Whether the media is ready to be accessed by the client
+     * @MongoDB\Boolean
+     */
+    private $ready;
+
+    /**
      * Attached media files
      * @MongoDB\ReferenceMany(
      *      strategy="addToSet",
@@ -78,17 +84,6 @@ class Media
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set the value of Database Id
-     * @param mixed id
-     * @return self
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
     }
 
     /**
@@ -255,4 +250,32 @@ class Media
         return $this;
     }
 
+    /**
+     * Get the value of Whether the media is ready to be accessed by the client
+     * @return mixed
+     */
+    public function getReady()
+    {
+        return $this->ready;
+    }
+
+    /**
+     * Alias for getReady()
+     * @return boolean
+     */
+    public function isReady()
+    {
+        return $this->ready;
+    }
+
+    /**
+     * Set the value of Whether the media is ready to be accessed by the client
+     * @param mixed ready
+     * @return self
+     */
+    public function setReady($ready)
+    {
+        $this->ready = $ready;
+        return $this;
+    }
 }

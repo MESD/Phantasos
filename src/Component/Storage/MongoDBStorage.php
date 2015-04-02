@@ -6,6 +6,7 @@ use Component\Storage\StorageInterface;
 use Component\Storage\Document\Media;
 use Component\Storage\Util\Converter\UploadTicketRequestToMedia;
 use Component\Preparer\UploadTicketRequest;
+use Component\Exceptions\Media\DoesNotExistException;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 
@@ -76,5 +77,48 @@ class MongoDBStorage implements StorageInterface
             ->getRepository('Storage:Media')
             ->findOneById($id)
         ;
+    }
+
+    /**
+     * Mark a piece of media as having been uploaded
+     * @param string $id   Media id
+     * @param string $type Media type
+     */
+    public function markAsUploaded($id, $type)
+    {
+        // Load the media
+        $media = $this->getMediaById($id);
+        if (null === $media) {
+            throw new DoesNotExistException($id);
+        }
+
+        // Update the media
+        $media->setUploaded(true);
+        $media->setMediaType($type);
+
+        // Persist and flush
+        $this->documentManager->persist($media);
+        $this->documentManager->flush($media);
+    }
+
+    /**
+     * Mark media as ready to be accessed by user
+     * @param string  $id    Media id
+     * @param boolean $ready Ready status (true by default)
+     */
+    public function markAsReady($id, $ready = true)
+    {
+        // Load the media
+        $media = $this->getMediaById($id);
+        if (null === $media) {
+            throw new DoesNotExistException($id);
+        }
+
+        // Update the media
+        $media->setReady($ready);
+
+        // Persist and flush
+        $this->documentManager->persist($media);
+        $this->documentManager->flush($media);
     }
 }

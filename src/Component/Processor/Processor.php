@@ -4,6 +4,7 @@ namespace Component\Processor;
 
 use Component\Processor\ProcessorInterface;
 use Component\Storage\StorageInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Processor implements ProcessorInterface
 {
@@ -38,6 +39,24 @@ class Processor implements ProcessorInterface
      */
     public function getSupportedTypes()
     {
+        return array(
+            'image/jpeg'
+        );
+    }
 
+    /**
+     * Process an uploaded file
+     * @param UploadedFile $original File to process
+     * @param string       $mediaId  Media id of the upload
+     * @return boolean True if the file is placed into a work queue
+     */
+    public function processFile(UploadedFile $original, $mediaId)
+    {
+        // Find a queue for the file
+
+        // Place into the queue
+
+        // Return that the file is going to be worked on
+        return true;
     }
 }

@@ -14,6 +14,7 @@ class MediaTypes
     const VIDEO = 'video';
     const AUDIO = 'audio';
     const DOCUMENT = 'document';
+    const IMAGE = 'image';
     const UNKNOWN = 'unkown';
 
     ////////////////////
@@ -30,6 +31,11 @@ class MediaTypes
         /**
          * @TODO fill this out
          */
+        switch($mimeType) {
+            case 'image/jpeg':
+                return self::IMAGE;
+                break;
+        }
 
         // If not in the list, return unknown
         return self::UNKNOWN;

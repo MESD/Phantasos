@@ -8,6 +8,7 @@ use Component\Storage\Document\Media;
 use Component\Processor\ProcessorInterface;
 use Component\Preparer\UploadTicketRequest;
 use Component\Preparer\UploadTicket;
+use Component\Preparer\Types\MediaTypes;
 use Component\Exceptions\Files\UnsupportedFileTypeException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -70,12 +71,30 @@ class Preparer implements PreparerInterface
 
     /**
      * Handle upload
-     * @param UploadedFile $file  Uploaded file
-     * @param Media        $media Media document
+     * @param UploadedFile $file    Uploaded file
+     * @param string       $mediaId Id of the media
      * @return boolean Whether the module was successful in handling the file
      */
-    public function handleUpload(UploadedFile $file, Media $media)
+    public function handleUpload(UploadedFile $file, $mediaId)
     {
-        throw new UnsupportedFileTypeException('monkey');
+        // Check that the file type is supported
+        if (!in_array(
+                $file->getMimeType(),
+                $this->processor->getSupportedTypes()
+        )) {
+            throw new UnsupportedFileTypeException($file->getMimeType());
+        }
+
+        // Determine media type
+        $type = MediaTypes::DetermineFromMimeType($file->getMimeType());
+
+        // Pass onto the processor
+        $this->processor->processFile($file, $mediaId);
+
+        // Mark as having been uploaded
+        $this->storage->markAsUploaded($mediaId, $type);
+
+        // return
+        return true;
     }
 }

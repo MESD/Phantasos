@@ -42,10 +42,10 @@ class ApiController extends Controller
             $uploadRequest->setSecurityTags(array());
         }
 
-        if ($request->request->has('hideToOthers')) {
+        if ($request->request->has('hide_to_others')) {
             $uploadRequest->setHideToOthers(
                 filter_var(
-                    $request->request->get('hideToOthers'),
+                    $request->request->get('hide_to_others'),
                     FILTER_VALIDATE_BOOLEAN
                 )
             );
@@ -100,15 +100,15 @@ class ApiController extends Controller
         }
 
         // Check that the file was given
-        if (!$request->files->has('fileData')) {
+        if (!$request->files->has('file_data')) {
             return new Response('File was not given', 400);
         }
 
         // Put the file into storage
         try {
             $this->get('phantasos.preparer')->handleUpload(
-                $request->files->get('fileData'),
-                $media
+                $request->files->get('file_data'),
+                $media->getId()
             );
         } catch (UnsupportedFileTypeException $e) {
             return new Response($e->getMessage(), 400);

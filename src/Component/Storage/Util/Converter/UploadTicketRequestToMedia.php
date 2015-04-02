@@ -23,6 +23,7 @@ class UploadTicketRequestToMedia
 
         // Set the uploaded to false
         $media->setUploaded(false);
+        $media->setReady(false);
 
         // Pull in the others fields
         $media->setApplicationName($uploadRequest->getApplicationName());
