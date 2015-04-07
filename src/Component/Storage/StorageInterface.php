@@ -3,6 +3,8 @@
 namespace Component\Storage;
 
 use Component\Preparer\UploadTicketRequest;
+use Component\Storage\FileInfo;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Interface for storage services
@@ -37,4 +39,20 @@ interface StorageInterface
      * @param boolean $ready Ready status (true by default)
      */
     public function markAsReady($id, $ready = true);
+
+    /**
+     * Add the original file
+     * @param UploadedFile $original Uploaded File
+     * @param string       $mediaId  Media id
+     * @return boolean Operation success
+     */
+    public function addOriginalFile(UploadedFile $original, $mediaId);
+
+    /**
+     * Get the original file for a media id
+     * @param string $mediaId Media Id
+     * @return FileInfo Original file if exists
+     */
+    public function getOriginalFile($mediaId);
+
 }

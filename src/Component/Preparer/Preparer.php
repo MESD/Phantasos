@@ -5,7 +5,7 @@ namespace Component\Preparer;
 use Component\Preparer\PreparerInterface;
 use Component\Storage\StorageInterface;
 use Component\Storage\Document\Media;
-use Component\Processor\ProcessorInterface;
+use Component\Processor\ProcessorQueuerInterface;
 use Component\Preparer\UploadTicketRequest;
 use Component\Preparer\UploadTicket;
 use Component\Preparer\Types\MediaTypes;
@@ -26,7 +26,7 @@ class Preparer implements PreparerInterface
 
     /**
      * Processor Module
-     * @var ProcessorInterface
+     * @var ProcessorQueuerInterface
      */
     private $processor;
 
@@ -36,16 +36,16 @@ class Preparer implements PreparerInterface
 
     /**
      * Constructor
-     * @param StorageInterface   $storage   Storage Module
-     * @param ProcessorInterface $processor Processor Module
+     * @param StorageInterface         $storage   Storage Module
+     * @param ProcessorQueuerInterface $processorQueuer Processor Module
      */
     public function __construct(
         StorageInterface $storage,
-        ProcessorInterface $processor)
+        ProcessorQueuerInterface $processorQueuer)
     {
         // Set the modules
         $this->storage = $storage;
-        $this->processor = $processor;
+        $this->processorQueuer = $processorQueuer;
     }
 
     ///////////////////////
@@ -80,7 +80,7 @@ class Preparer implements PreparerInterface
         // Check that the file type is supported
         if (!in_array(
                 $file->getMimeType(),
-                $this->processor->getSupportedTypes()
+                $this->processorQueuer->getSupportedTypes()
         )) {
             throw new UnsupportedFileTypeException($file->getMimeType());
         }
@@ -89,7 +89,7 @@ class Preparer implements PreparerInterface
         $type = MediaTypes::DetermineFromMimeType($file->getMimeType());
 
         // Pass onto the processor
-        $this->processor->processFile($file, $mediaId);
+        $this->processorQueuer->queueFile($file, $mediaId);
 
         // Mark as having been uploaded
         $this->storage->markAsUploaded($mediaId, $type);

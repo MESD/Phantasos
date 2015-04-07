@@ -10,58 +10,34 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 class MediaFile
 {
     /**
-     * Database ID
+     * Database id
      * @MongoDB\Id
      */
     private $id;
 
     /**
-     * File name
+     * Name of the file
      * @MongoDB\String
      */
-    private $name;
+    private $fileName;
 
     /**
-     * GridFS file
-     * @MongoDB\File
+     * Whether the file is original or created via the processor
+     * @MongoDB\Boolean
      */
-    private $file;
+    private $original;
 
     /**
-     * Upload Date
-     * @MongoDB\Date
-     */
-    private $uploadDate;
-
-    /**
-     * File length
-     * @MongoDB\Int
-     */
-    private $length;
-
-    /**
-     * Chunksize
-     * @MongoDB\Int
-     */
-    private $chunkSize;
-
-    /**
-     * MD5
+     * File type
      * @MongoDB\String
      */
-    private $md5;
+    private $contentType;
 
     /**
-     * Mimetype
+     * Bitrate
      * @MongoDB\String
      */
-    private $mimeType;
-
-    /**
-     * Width if applicable
-     * @MongoDB\Int
-     */
-    private $width;
+    private $bitRate;
 
     /**
      * Height if applicable
@@ -70,24 +46,18 @@ class MediaFile
     private $height;
 
     /**
-     * Bitrate
-     * @MongoDB\String
+     * Width if applicable
+     * @MongoDB\Int
      */
-    private $bitrate;
-
-    /**
-     * Encoding format
-     * @MongoDB\String
-     */
-    private $encodingFormat;
+    private $width;
 
     /////////////////////////
     // GETTERS AND SETTERS //
     /////////////////////////
 
     /**
-     * Get the value of Database ID
-     * @return mixed
+     * Get the value of the database Id
+     * @return string
      */
     public function getId()
     {
@@ -95,176 +65,108 @@ class MediaFile
     }
 
     /**
-     * Get the value of File name
-     * @return mixed
+     * Get the value of Path of the file
+     * @return string
      */
-    public function getName()
+    public function getFilePath()
     {
-        return $this->name;
+        return $this->filePath;
     }
 
     /**
-     * Set the value of File name
-     * @param mixed name
+     * Set the value of Path of the file
+     * @param string filePath
      * @return self
      */
-    public function setName($name)
+    public function setFilePath($filePath)
     {
-        $this->name = $name;
-
+        $this->filePath = $filePath;
         return $this;
     }
 
     /**
-     * Get the value of GridFS file
-     * @return mixed
+     * Get the value of Name of the file
+     * @return string
      */
-    public function getFile()
+    public function getFileName()
     {
-        return $this->file;
+        return $this->fileName;
     }
 
     /**
-     * Set the value of GridFS file
-     * @param mixed file
+     * Set the value of Name of the file
+     * @param string fileName
      * @return self
      */
-    public function setFile($file)
+    public function setFileName($fileName)
     {
-        $this->file = $file;
-
+        $this->fileName = $fileName;
         return $this;
     }
 
     /**
-     * Get the value of Upload Date
-     * @return mixed
+     * Get the value of Whether the file is original or created via the processor
+     * @return boolean
      */
-    public function getUploadDate()
+    public function getOriginal()
     {
-        return $this->uploadDate;
+        return $this->original;
     }
 
     /**
-     * Set the value of Upload Date
-     * @param mixed uploadDate
+     * Set the value of Whether the file is original or created via the processor
+     * @param boolean original
      * @return self
      */
-    public function setUploadDate($uploadDate)
+    public function setOriginal($original)
     {
-        $this->uploadDate = $uploadDate;
-
+        $this->original = $original;
         return $this;
     }
 
     /**
-     * Get the value of File length
-     * @return mixed
+     * Get the value of content type
+     * @return string
      */
-    public function getLength()
+    public function getContentType()
     {
-        return $this->length;
+        return $this->contentType;
     }
 
     /**
-     * Set the value of File length
-     * @param mixed length
+     * Set the value of content type
+     * @param string contentType
      * @return self
      */
-    public function setLength($length)
+    public function setContentType($contentType)
     {
-        $this->length = $length;
-
+        $this->contentType = $contentType;
         return $this;
     }
 
     /**
-     * Get the value of Chunksize
-     * @return mixed
+     * Get the value of Bitrate
+     * @return string
      */
-    public function getChunkSize()
+    public function getBitRate()
     {
-        return $this->chunkSize;
+        return $this->bitRate;
     }
 
     /**
-     * Set the value of Chunksize
-     * @param mixed chunkSize
+     * Set the value of Bitrate
+     * @param string bitRate
      * @return self
      */
-    public function setChunkSize($chunkSize)
+    public function setBitRate($bitRate)
     {
-        $this->chunkSize = $chunkSize;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of MD5
-     * @return mixed
-     */
-    public function getMd5()
-    {
-        return $this->md5;
-    }
-
-    /**
-     * Set the value of MD5
-     * @param mixed md5
-     * @return self
-     */
-    public function setMd5($md5)
-    {
-        $this->md5 = $md5;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Mimetype
-     * @return mixed
-     */
-    public function getMimeType()
-    {
-        return $this->mimeType;
-    }
-
-    /**
-     * Set the value of Mimetype
-     * @param mixed mimeType
-     * @return self
-     */
-    public function setMimeType($mimeType)
-    {
-        $this->mimeType = $mimeType;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Width if applicable
-     * @return mixed
-     */
-    public function getWidth()
-    {
-        return $this->width;
-    }
-
-    /**
-     * Set the value of Width if applicable
-     * @param mixed width
-     * @return self
-     */
-    public function setWidth($width)
-    {
-        $this->width = $width;
-
+        $this->bitRate = $bitRate;
         return $this;
     }
 
     /**
      * Get the value of Height if applicable
-     * @return mixed
+     * @return int
      */
     public function getHeight()
     {
@@ -273,55 +175,32 @@ class MediaFile
 
     /**
      * Set the value of Height if applicable
-     * @param mixed height
+     * @param int height
      * @return self
      */
     public function setHeight($height)
     {
         $this->height = $height;
-
         return $this;
     }
 
     /**
-     * Get the value of Bitrate
-     * @return mixed
+     * Get the value of Width if applicable
+     * @return int
      */
-    public function getBitrate()
+    public function getWidth()
     {
-        return $this->bitrate;
+        return $this->width;
     }
 
     /**
-     * Set the value of Bitrate
-     * @param mixed bitrate
+     * Set the value of Width if applicable
+     * @param int width
      * @return self
      */
-    public function setBitrate($bitrate)
+    public function setWidth($width)
     {
-        $this->bitrate = $bitrate;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Encoding format
-     * @return mixed
-     */
-    public function getEncodingFormat()
-    {
-        return $this->encodingFormat;
-    }
-
-    /**
-     * Set the value of Encoding format
-     * @param mixed encodingFormat
-     * @return self
-     */
-    public function setEncodingFormat($encodingFormat)
-    {
-        $this->encodingFormat = $encodingFormat;
-
+        $this->width = $width;
         return $this;
     }
 }

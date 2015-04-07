@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new TyHand\SimpleApiKeyBundle\TyHandSimpleApiKeyBundle(),
             new TyHand\SimpleApiKeyMongoStorageBundle\TyHandSimpleApiKeyMongoStorageBundle(),
+            new OldSound\RabbitMqBundle\OldSoundRabbitMqBundle(),
             new AppBundle\AppBundle()
         );
 

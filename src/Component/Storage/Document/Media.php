@@ -3,6 +3,8 @@
 namespace Component\Storage\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use Doctrine\Command\Collections\ArrayCollection;
+use Component\Storage\Document\MediaFile;
 
 /**
  * @MongoDB\Document(collection="media")
@@ -72,6 +74,23 @@ class Media
      *)
      */
     private $files;
+
+    /////////////////
+    // CONSTRUCTOR //
+    /////////////////
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        // Set defualts
+        $this->tags = array();
+        $this->securityTags = array();
+        $this->uploaded = false;
+        $this->ready = false;
+        $this->files = ArrayCollection();
+    }
 
     /////////////////////////
     // GETTERS AND SETTERS //
@@ -208,7 +227,7 @@ class Media
 
     /**
      * Get the value of Attached media files
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getFiles()
     {
@@ -216,11 +235,33 @@ class Media
     }
 
     /**
-     * Set the value of Attached media files
-     * @param mixed files
+     * Add media file
+     * @param MediaFile $file File to add
      * @return self
      */
-    public function setFiles($files)
+    public function addFile(MediaFile $file)
+    {
+        $this->files->add($file);
+        return $this;
+    }
+
+    /**
+     * Remove a media file
+     * @param MediaFile $file File to remove
+     * @return self
+     */
+    public function removeFile(MediaFile $file)
+    {
+        $this->files->remove($this->files->indexOf($file));
+        return $this;
+    }
+
+    /**
+     * Set the value of Attached media files
+     * @param ArrayCollection files
+     * @return self
+     */
+    public function setFiles(ArrayCollection $files)
     {
         $this->files = $files;
         return $this;
@@ -246,7 +287,6 @@ class Media
     public function setUploadExpiration($uploadExpiration)
     {
         $this->uploadExpiration = $uploadExpiration;
-
         return $this;
     }
 

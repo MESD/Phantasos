@@ -2,11 +2,12 @@
 
 namespace Component\Processor;
 
-use Component\Processor\ProcessorInterface;
+use Component\Processor\ProcessorQueuerInterface;
 use Component\Storage\StorageInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use OldSound\RabbitMqBundle\RabbitMq\Producer;
 
-class Processor implements ProcessorInterface
+class ProcessorQueuer implements ProcessorQueuerInterface
 {
     ////////////////
     // PROPERTIES //
@@ -18,15 +19,25 @@ class Processor implements ProcessorInterface
      */
     protected $storage;
 
+    /**
+     * RabbitMQ producer
+     * @var Producer
+     */
+    protected $producer;
+
     /////////////////
     // CONSTRUCTOR //
     /////////////////
 
-
-    public function __construct(StorageInterface $storage)
+    /**
+     * Constructor
+     * @param StorageInterface $storage Storage module
+     */
+    public function __construct(StorageInterface $storage, Producer $producer)
     {
         // Set the properties
         $this->storage = $storage;
+        $this->producer = $producer;
     }
 
     ///////////////////////
@@ -45,16 +56,22 @@ class Processor implements ProcessorInterface
     }
 
     /**
-     * Process an uploaded file
+     * Queue an uploaded file for processing
      * @param UploadedFile $original File to process
      * @param string       $mediaId  Media id of the upload
      * @return boolean True if the file is placed into a work queue
      */
-    public function processFile(UploadedFile $original, $mediaId)
+    public function queueFile(UploadedFile $original, $mediaId)
     {
-        // Find a queue for the file
+        // Place the original into storage
+        $this->storage->addOriginalFile($original, $mediaId);
 
-        // Place into the queue
+        // Create a message
+        $msg = array('mediaId' => $mediaId);
+
+        // Publish the message to the Rabbit MQ server
+        $ret  = $this->producer->publish(serialize($msg));
+        var_dump($ret); die;
 
         // Return that the file is going to be worked on
         return true;

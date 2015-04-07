@@ -43,6 +43,23 @@ assetic:
         #yui_css:
         #    jar: "%kernel.root_dir%/Resources/java/yuicompressor-2.4.7.jar"
 
+old_sound_rabbit_mq:
+    connections:
+        default:
+            host: 'localhost'
+            port: 5672
+            keepalive: true
+    producers:
+        process_upload:
+            connection: default
+            exchange_options: { name: 'process_upload', type: direct }
+    consumers:
+        process_upload:
+            connection: default
+            exchange_options: { name: 'process_upload', type: direct }
+            queue_options: { name: 'process_upload' }
+            callback: phantasos.processor   
+
 doctrine_mongodb:
     connections:
         default:

@@ -1,15 +1,31 @@
 services:
+    gaufrette.adapter.local:
+        class: Gaufrette\Adapter\Local
+        arguments:
+            - %phantasos_media_directory%
+    gaufrette.filesystem.local:
+        class: Gaufrette\Filesystem
+        arguments:
+            - @gaufrette.adapter.local
+    phantasos.filekey.local:
+        class: Component\Storage\FileKey\LocalFileKey
     phantasos.storage:
         class: Component\Storage\MongoDBStorage
         arguments:
             - @doctrine_mongodb.odm.document_manager
-    phantasos.processor:
-        class: Component\Processor\Processor
+            - @gaufrette.filesystem.local
+            - @phantasos.filekey.local
+    phantasos.processor_queuer:
+        class: Component\Processor\ProcessorQueuer
         arguments:
             - @phantasos.storage
+            - @old_sound_rabbit_mq.process_upload_producer
     phantasos.preparer:
         class: Component\Preparer\Preparer
         arguments:
             - @phantasos.storage
-            - @phantasos.processor
-            - @router
+            - @phantasos.processor_queuer
+    phantasos.processor:
+        class: Component\Processor\ProcessorConsumer
+        arguments:
+            - @phantasos.storage

@@ -6,9 +6,11 @@ use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 
 use Component\Storage\StorageInterface;
+use Component\Exceptions\Api\MissingParameterException;
+use Component\Exceptions\Media\DoesNotExistException;
 
 /**
- * Consumer for the media processing
+ * Consumer for the media processing should be called via RabbitMQ
  */
 class ProcessorConsumer implements ConsumerInterface
 {
@@ -47,6 +49,25 @@ class ProcessorConsumer implements ConsumerInterface
      */
     public function execute(AMQPMessage $msg)
     {
-        return false;
+        // Unserialize the message of the body and get the media id
+        $message = unserialize($msg->body);
+
+        // Get the media id
+        if (!array_key_exists('mediaId', $message)) {
+            throw new MissingParameterException('mediaId');
+        }
+
+        // Get the original file
+        $original = $this->storage->getOriginal($media->getId());
+
+        // Build the necessary processor and process
+        $factory = new ProcessorFactory();
+        $processor = $factory->build(
+            $original->getMediaFileDocument()->getContentType(),
+            $this->storage
+        );
+
+        // Process and return
+        return $processor->process($original);
     }
 }
