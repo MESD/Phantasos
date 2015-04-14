@@ -7,10 +7,11 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 interface ProcessorQueuerInterface
 {
     /**
-     * Get a list of mime types the processor module can handle
-     * @return array List of mime types that the processor can handle
+     * Get the media type from the mime type
+     * @param string $mimeType Mime type of the uploaded file
+     * @return string|null Media type or null if unsupported
      */
-    public function getSupportedTypes();
+    public function getMediaType($mimeType);
 
     /**
      * Queue an uploaded file for processing

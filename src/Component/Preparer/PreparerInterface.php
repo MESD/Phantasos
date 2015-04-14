@@ -16,8 +16,8 @@ interface PreparerInterface
 
     /**
      * Handle upload
-     * @param UploadedFile $file    Uploaded file
-     * @param string       $mediaId Id of the media
+     * @param UploadedFile $file     Uploaded file
+     * @param string       $mediaId  Id of the media
      * @return boolean Whether the module was successful in handling the file
      */
     public function handleUpload(UploadedFile $file, $mediaId);

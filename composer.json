@@ -21,7 +21,10 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "doctrine/mongodb-odm-bundle": "~3.0.0-BETA",
         "oldsound/rabbitmq-bundle": "~1.6",
-        "knplabs/gaufrette": "~0.1"
+        "knplabs/gaufrette": "~0.1",
+        "imagine/imagine": "~0.5",
+        "php-ffmpeg/php-ffmpeg": "~0.6",
+        "guzzlehttp/guzzle": "~5.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

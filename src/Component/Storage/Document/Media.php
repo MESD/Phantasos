@@ -3,7 +3,7 @@
 namespace Component\Storage\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-use Doctrine\Command\Collections\ArrayCollection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Component\Storage\Document\MediaFile;
 
 /**
@@ -60,6 +60,19 @@ class Media
     private $mediaType;
 
     /**
+     * Optional route to callback to when the media is ready
+     * @MongoDB\String
+     */
+    private $callback;
+
+    /**
+     * If the callback route is set, then this flag indicts if the client was
+     * alerted of the processing being completed
+     * @MongoDB\Boolean
+     */
+    private $callbackSent;
+
+    /**
      * Whether the media is ready to be accessed by the client
      * @MongoDB\Boolean
      */
@@ -89,7 +102,8 @@ class Media
         $this->securityTags = array();
         $this->uploaded = false;
         $this->ready = false;
-        $this->files = ArrayCollection();
+        $this->files = new ArrayCollection();
+        $this->callbackSent = false;
     }
 
     /////////////////////////
@@ -261,7 +275,7 @@ class Media
      * @param ArrayCollection files
      * @return self
      */
-    public function setFiles(ArrayCollection $files)
+    public function setFiles($files)
     {
         $this->files = $files;
         return $this;
@@ -316,6 +330,46 @@ class Media
     public function setReady($ready)
     {
         $this->ready = $ready;
+        return $this;
+    }
+
+    /**
+     * Get the value of Optional route to callback to when the media is ready
+     * @return mixed
+     */
+    public function getCallback()
+    {
+        return $this->callback;
+    }
+
+    /**
+     * Set the value of Optional route to callback to when the media is ready
+     * @param mixed callback
+     * @return self
+     */
+    public function setCallback($callback)
+    {
+        $this->callback = $callback;
+        return $this;
+    }
+
+    /**
+     * Get the value of If the callback route is set, then this flag indicts if the client was
+     * @return mixed
+     */
+    public function getCallbackSent()
+    {
+        return $this->callbackSent;
+    }
+
+    /**
+     * Set the value of If the callback route is set, then this flag indicts if the client was
+     * @param mixed callbackSent
+     * @return self
+     */
+    public function setCallbackSent($callbackSent)
+    {
+        $this->callbackSent = $callbackSent;
         return $this;
     }
 }

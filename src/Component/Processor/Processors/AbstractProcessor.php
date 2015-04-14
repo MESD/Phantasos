@@ -8,7 +8,7 @@ use Component\Storage\FileInfo;
 /**
  * Base processor
  */
-abstract AbstractProcessor
+abstract class AbstractProcessor
 {
     ////////////////
     // PROPERTIES //
@@ -20,23 +20,35 @@ abstract AbstractProcessor
      */
     protected $storage;
 
-    /////////////////
-    // CONSTRUCTOR //
-    /////////////////
+    /////////////
+    // METHODS //
+    /////////////
 
     /**
-     * Constructor
-     * @param StorageInterface $storage Storage Module
+     * Set the storage module
+     * @param StorageInterface $storage Storage module
+     * @return self
      */
-    public function __construct(StorageInterface $storage)
+    public function setStorage(StorageInterface $storage)
     {
-        // Set
         $this->storage = $storage;
+        return $this;
     }
 
     //////////////////////
     // ABSTRACT METHODS //
     //////////////////////
+
+    /**
+     * Get an array of supported mime types by this processor
+     * @return array List of supported mime types
+     */
+    public abstract function getSupportedTypes();
+
+    /**
+     * Get the media type that this processor handles
+     */
+    public abstract function getMediaType();
 
     /**
      * Process the media file

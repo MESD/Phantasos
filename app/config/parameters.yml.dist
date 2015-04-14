@@ -23,3 +23,9 @@ parameters:
     mongodb_username: ~
     mongodb_password: ~
     mongodb_database: ~
+
+    phantasos_media_directory: /var/media
+    phantasos_video_timeout: 60000
+    phantasos_video_threads: 8
+    ffmpeg_binary: '/usr/bin/ffmpeg'
+    ffprobe_binary: '/usr/bin/ffprobe'

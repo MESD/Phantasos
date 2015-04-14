@@ -53,6 +53,24 @@ interface StorageInterface
      * @param string $mediaId Media Id
      * @return FileInfo Original file if exists
      */
-    public function getOriginalFile($mediaId);
+    public function getOriginalFileInfo($mediaId);
 
+    /**
+     * Add a file to the database
+     * @param string $mediaId     Media Id
+     * @param string $fullPath    Full file path
+     * @param string $name        File name
+     * @param string $contentType Mime type
+     * @param int    $width       Width if applicable
+     * @param int    $height      Height if applicable
+     * @param string $bitRate     Bitrate if applicable
+     */
+    public function addFile(
+        $mediaId,
+        $fullPath,
+        $name,
+        $contentType,
+        $width = null,
+        $height = null,
+        $bitRate = null);
 }

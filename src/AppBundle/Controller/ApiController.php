@@ -31,13 +31,17 @@ class ApiController extends Controller
 
         // Get the parameter values or their defaults
         if ($request->request->has('tags')) {
-            $uploadRequest->setTags(explode(',', $request->request->get('tags')));
+            $uploadRequest->setTags(
+                explode(',', $request->request->get('tags'))
+            );
         } else {
             $uploadRequest->setTags(array());
         }
 
         if ($request->request->has('security')) {
-            $uploadRequest->setSecurityTags(explode(',', $request->request->get('security')));
+            $uploadRequest->setSecurityTags(
+                explode(',', $request->request->get('security'))
+            );
         } else {
             $uploadRequest->setSecurityTags(array());
         }
@@ -51,6 +55,12 @@ class ApiController extends Controller
             );
         } else {
             $uploadRequest->setHideToOthers(true);
+        }
+
+        if ($request->request->has('callback_route')) {
+            $uploadRequest->setCallbackRoute(
+                $request->request->get('callback_route')
+            );
         }
 
         // Set the application name

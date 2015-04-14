@@ -44,6 +44,12 @@ class UploadTicketRequest
      */
     private $hideToOthers;
 
+    /**
+     * Optional route to callback when the media is done processing
+     * @var string
+     */
+    private $callback;
+
     /////////////////
     // CONSTRUCTOR //
     /////////////////
@@ -57,6 +63,7 @@ class UploadTicketRequest
         $this->tags = array();
         $this->securityTags = array();
         $this->hideToOthers = true;
+        $this->callback = null;
     }
 
     /////////////////////////
@@ -163,6 +170,26 @@ class UploadTicketRequest
     public function setHideToOthers($hideToOthers)
     {
         $this->hideToOthers = $hideToOthers;
+        return $this;
+    }
+
+    /**
+     * Get the value of Optional route to callback when the media is done processing
+     * @return string
+     */
+    public function getCallback()
+    {
+        return $this->callback;
+    }
+
+    /**
+     * Set the value of Optional route to callback when the media is done processing
+     * @param string callback
+     * @return self
+     */
+    public function setCallback($callback)
+    {
+        $this->callback = $callback;
         return $this;
     }
 }

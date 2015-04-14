@@ -71,25 +71,21 @@ class Preparer implements PreparerInterface
 
     /**
      * Handle upload
-     * @param UploadedFile $file    Uploaded file
-     * @param string       $mediaId Id of the media
+     * @param UploadedFile $file     Uploaded file
+     * @param string       $mediaId  Id of the media
+     * @param string       $callback Optional route parameter to call when done
      * @return boolean Whether the module was successful in handling the file
      */
     public function handleUpload(UploadedFile $file, $mediaId)
     {
         // Check that the file type is supported
-        if (!in_array(
-                $file->getMimeType(),
-                $this->processorQueuer->getSupportedTypes()
-        )) {
+        $type = $this->processorQueuer->getMediaType($file->getMimeType());
+        if (null === $type) {
             throw new UnsupportedFileTypeException($file->getMimeType());
         }
 
-        // Determine media type
-        $type = MediaTypes::DetermineFromMimeType($file->getMimeType());
-
         // Pass onto the processor
-        $this->processorQueuer->queueFile($file, $mediaId);
+        $this->processorQueuer->queueFile($file, $mediaId, $callback);
 
         // Mark as having been uploaded
         $this->storage->markAsUploaded($mediaId, $type);

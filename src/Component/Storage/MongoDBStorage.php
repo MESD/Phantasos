@@ -9,14 +9,13 @@ use Component\Storage\Document\MediaFile;
 use Component\Storage\Util\Converter\UploadTicketRequestToMedia;
 use Component\Storage\FileKey\FileKeyInterface;
 use Component\Preparer\UploadTicketRequest;
+use Component\Alerter\AlerterInterface;
 use Component\Exceptions\Media\DoesNotExistException;
 use Component\Exceptions\Media\NotUploadedException;
 use Component\Exceptions\Media\OriginalNoLongerExistsException;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Gaufrette\Filesystem;
-use Gaufrette\File;
 
 class MongoDBStorage implements StorageInterface
 {
@@ -31,16 +30,22 @@ class MongoDBStorage implements StorageInterface
     protected $documentManager;
 
     /**
-     * Abstracted filesystem
-     * @var Filesystem
-     */
-    protected $filesystem;
-
-    /**
      * File key
      * @var FileKeyInterface
      */
     protected $fileKey;
+
+    /**
+     * Base directory
+     * @var string
+     */
+    protected $directory;
+
+    /**
+     * Alerter Component
+     * @var AlerterInterface
+     */
+    protected $alerter;
 
     /////////////////
     // CONSTRUCTOR //
@@ -49,18 +54,21 @@ class MongoDBStorage implements StorageInterface
     /**
      * Constructor
      * @param DocumentManager  $documentManager Document Manager
-     * @param Filesystem       $filesystem      Filesystem
+     * @param string           $directory       Media directory
      * @param FileKeyInterface $fileKey         File key
+     * @param AlerterInterface $alerter         Alerter Component
      */
     public function __construct(
         DocumentManager $documentManager,
-        Filesystem $filesystem,
-        FileKeyInterface $fileKey)
+        $directory,
+        FileKeyInterface $fileKey,
+        AlerterInterface $alerter)
     {
         // Set the properties
         $this->documentManager = $documentManager;
-        $this->filesystem = $filesystem;
+        $this->directory = $directory;
         $this->fileKey = $fileKey;
+        $this->alerter = $alerter;
     }
 
     ///////////////////////
@@ -144,6 +152,15 @@ class MongoDBStorage implements StorageInterface
         // Update the media
         $media->setReady($ready);
 
+        // If the media document has a callback route, call it
+        if (null !== $media->getCallback()) {
+            $ret = $this->alerter->alertMediaIsReady(
+                $media->getCallback(),
+                $media->getId()
+            );
+            $media->setCallbackSent($ret);
+        }
+
         // Persist and flush
         $this->documentManager->persist($media);
         $this->documentManager->flush($media);
@@ -176,11 +193,8 @@ class MongoDBStorage implements StorageInterface
         // Add the document to the original media document
         $media->addFile($file);
 
-        // Write the file to the filesystem
-        $this->filesystem->write(
-            $fileKey . $fileName,
-            file_get_contents($original->getPathname())
-        );
+        // Place the file permnately into the media store
+        $original->move($this->directory . '/' . $fileKey, $fileName);
 
         // Persist and flush
         $this->documentManager->persist($file);
@@ -195,7 +209,7 @@ class MongoDBStorage implements StorageInterface
      * @param string $mediaId Media Id
      * @return FileInfo Original file if exists
      */
-    public function getOriginalFile($mediaId)
+    public function getOriginalFileInfo($mediaId)
     {
         // Load the media
         $media = $this->getMediaById($mediaId);
@@ -212,18 +226,60 @@ class MongoDBStorage implements StorageInterface
         foreach($media->getFiles() as $mediaFile) {
             // Check if the file is the original
             if ($mediaFile->getOriginal()) {
-                // Get the file out of the file store
-                $file = $this->filesystem->get(
-                    $this->fileKey->getBaseFileKey($mediaId) .
-                    $media->getFileName()
-                );
+                // Create the path to the file
+                $basePath = $this->directory . '/' .
+                    $this->fileKey->getBaseFileKey($mediaId);
 
                 // Create the file info set
-                return new FileInfo($file, $media, $mediaFile);
+                return new FileInfo($media, $mediaFile, $basePath);
             }
         }
 
         // If the original was not returned at this point, it no longer exists
         throw new OriginalNoLongerExistsException($mediaId);
+    }
+
+    /**
+     * Add a file to the database
+     * @param string $mediaId     Media Id
+     * @param string $fullPath    Full file path
+     * @param string $name        File name
+     * @param string $contentType Mime type
+     * @param int    $width       Width if applicable
+     * @param int    $height      Height if applicable
+     * @param string $bitRate     Bitrate if applicable
+     */
+    public function addFile(
+        $mediaId,
+        $fullPath,
+        $name,
+        $contentType,
+        $width = null,
+        $height = null,
+        $bitRate = null)
+    {
+        // Load the media
+        $media = $this->getMediaById($mediaId);
+        if (null === $media) {
+            throw new DoesNotExistException($mediaId);
+        }
+
+        // Create a new media file document
+        $file = new MediaFile();
+        $file->setFileName($name);
+        $file->setContentType($contentType);
+        $file->setOriginal(false);
+        $file->setWidth($width);
+        $file->setHeight($height);
+        $file->setBitRate($bitRate);
+
+        // Add the document to the original media document
+        $media->addFile($file);
+
+        // Persist and flush
+        $this->documentManager->persist($file);
+        $this->documentManager->flush();
+
+        return true;
     }
 }

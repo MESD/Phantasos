@@ -7,7 +7,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 use Component\Storage\StorageInterface;
 use Component\Exceptions\Api\MissingParameterException;
-use Component\Exceptions\Media\DoesNotExistException;
+use Component\Processor\ProcessorContainer;
 
 /**
  * Consumer for the media processing should be called via RabbitMQ
@@ -24,6 +24,12 @@ class ProcessorConsumer implements ConsumerInterface
      */
     private $storage;
 
+    /**
+     * Container for processors
+     * @var ProcessorContainer
+     */
+    private $processorContainer;
+
     /////////////////
     // CONSTRUCTOR //
     /////////////////
@@ -32,10 +38,13 @@ class ProcessorConsumer implements ConsumerInterface
      * Constructor
      * @param StorageInterface $storage Storage Module
      */
-    public function __construct(StorageInterface $storage)
+    public function __construct(
+        StorageInterface $storage,
+        ProcessorContainer $processorContainer)
     {
         // Set the storage
         $this->storage = $storage;
+        $this->processorContainer = $processorContainer;
     }
 
     ///////////////////////
@@ -58,16 +67,9 @@ class ProcessorConsumer implements ConsumerInterface
         }
 
         // Get the original file
-        $original = $this->storage->getOriginal($media->getId());
+        $original = $this->storage->getOriginalFileInfo($message['mediaId']);
 
-        // Build the necessary processor and process
-        $factory = new ProcessorFactory();
-        $processor = $factory->build(
-            $original->getMediaFileDocument()->getContentType(),
-            $this->storage
-        );
-
-        // Process and return
-        return $processor->process($original);
+        // Have the container find the processor and process
+        $this->processorContainer->process($original);
     }
 }

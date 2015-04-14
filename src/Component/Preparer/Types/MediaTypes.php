@@ -14,30 +14,7 @@ class MediaTypes
     const VIDEO = 'video';
     const AUDIO = 'audio';
     const DOCUMENT = 'document';
+    const PDF = 'pdf';
     const IMAGE = 'image';
-    const UNKNOWN = 'unkown';
-
-    ////////////////////
-    // STATIC METHODS //
-    ////////////////////
-
-    /**
-     * Determine which media type to set by the mime type of the file
-     * @param string $mimeType Mime type of the file
-     * @return string Media type
-     */
-    public static function determineFromMimeType($mimeType)
-    {
-        /**
-         * @TODO fill this out
-         */
-        switch($mimeType) {
-            case 'image/jpeg':
-                return self::IMAGE;
-                break;
-        }
-
-        // If not in the list, return unknown
-        return self::UNKNOWN;
-    }
+    const UNKNOWN = 'unknown';
 }

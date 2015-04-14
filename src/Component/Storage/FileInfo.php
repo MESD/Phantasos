@@ -16,22 +16,22 @@ class FileInfo
     ////////////////
 
     /**
-     * File system file
-     * @var File
-     */
-    protected $file;
-
-    /**
-     * Parent media document
+     * Parent media
      * @var Media
      */
-    protected $mediaDocument;
+    protected $media;
 
     /**
-     * Document for the media file
+     *  for the media file
      * @var MediaFile
      */
-    protected $mediaFileDocument;
+    protected $mediaFile;
+
+    /**
+     * Path to the file barring out the file name
+     * @var string
+     */
+    protected $basePath;
 
     /////////////////
     // CONSTRUCTOR //
@@ -39,19 +39,29 @@ class FileInfo
 
     /**
      * Constructor
-     * @param File      $file              Filesystem file
-     * @param Media     $mediaDocument     Media document
-     * @param MediaFile $mediaFileDocument Media file document
+     * @param Media     $media     Media
+     * @param MediaFile $mediaFile Media file
+     * @param strgin    $basePath  Base path
      */
-    public function __construct(
-        File $file,
-        Media $mediaDocument,
-        MediaFile $mediaFileDocument)
+    public function __construct(Media $media, MediaFile $mediaFile, $basePath)
     {
         // Set
-        $this->file = $file;
-        $this->mediaDocument = $mediaDocument;
-        $this->mediaFileDocument = $mediaFileDocument;
+        $this->media = $media;
+        $this->mediaFile = $mediaFile;
+        $this->basePath = $basePath;
+    }
+
+    /////////////
+    // METHODS //
+    /////////////
+
+    /**
+     * Get media id
+     * @return string Media Id
+     */
+    public function getMediaId()
+    {
+        return $this->media->getId();
     }
 
     /////////////////////////
@@ -59,63 +69,62 @@ class FileInfo
     /////////////////////////
 
     /**
-     * Get the value of File system file
-     * @return File
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * Set the value of File system file
-     * @param File file
-     * @return self
-     */
-    public function setFile(File $file)
-    {
-        $this->file = $file;
-        return $this;
-    }
-
-    /**
-     * Get the value of Parent media document
+     * Get the value of Parent media
      * @return Media
      */
-    public function getMediaDocument()
+    public function getMedia()
     {
-        return $this->mediaDocument;
+        return $this->media;
     }
 
     /**
-     * Set the value of Parent media document
-     * @param Media mediaDocument
+     * Set the value of Parent media
+     * @param Media media
      * @return self
      */
-    public function setMediaDocument(Media $mediaDocument)
+    public function setMedia(Media $media)
     {
-        $this->mediaDocument = $mediaDocument;
+        $this->media = $media;
         return $this;
     }
 
     /**
-     * Get the value of Document for the media file
+     * Get the value of  for the media file
      * @return MediaFile
      */
-    public function getMediaFileDocument()
+    public function getMediaFile()
     {
-        return $this->mediaFileDocument;
+        return $this->mediaFile;
     }
 
     /**
-     * Set the value of Document for the media file
-     * @param MediaFile mediaFileDocument
+     * Set the value of  for the media file
+     * @param MediaFile mediaFile
      * @return self
      */
-    public function setMediaFileDocument(MediaFile $mediaFileDocument)
+    public function setMediaFile(MediaFile $mediaFile)
     {
-        $this->mediaFileDocument = $mediaFileDocument;
+        $this->mediaFile = $mediaFile;
         return $this;
     }
 
+    /**
+     * Get the value of Path to the file barring out the file name
+     * @return string
+     */
+    public function getBasePath()
+    {
+        return $this->basePath;
+    }
+
+    /**
+     * Set the value of Path to the file barring out the file name
+     * @param string basePath
+     * @return self
+     */
+    public function setBasePath($basePath)
+    {
+        $this->basePath = $basePath;
+        return $this;
+    }
 }
