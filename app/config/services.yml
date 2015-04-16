@@ -2,7 +2,7 @@ services:
     phantasos.filekey.local:
         class: Component\Storage\FileKey\LocalFileKey
     phantasos.alerter:
-        class: Component\Alerter
+        class: Component\Alerter\Alerter
     phantasos.storage:
         class: Component\Storage\MongoDBStorage
         arguments:
@@ -56,3 +56,7 @@ services:
         arguments:
             - @phantasos.storage
             - @phantasos.processor_queuer
+    phantasos.retrieval:
+        class: Component\Retrieval\Retrieval
+        arguments:
+            - @phantasos.storage

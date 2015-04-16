@@ -13,6 +13,7 @@ use Component\Alerter\AlerterInterface;
 use Component\Exceptions\Media\DoesNotExistException;
 use Component\Exceptions\Media\NotUploadedException;
 use Component\Exceptions\Media\OriginalNoLongerExistsException;
+use Component\Exceptions\Media\NotReadyException;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -110,6 +111,39 @@ class MongoDBStorage implements StorageInterface
         return $this
             ->documentManager
             ->getRepository('Storage:Media')
+            ->findOneById($id)
+        ;
+    }
+
+    /**
+     * Get a media document by a media file
+     * @param MediaFile $mediaFileId Media file to get the parent of
+     * @return Media Parent media document
+     */
+    public function getMediaByMediaFile(MediaFile $mediaFile)
+    {
+        return $this
+            ->documentManager
+            ->createQueryBuilder('Storage:Media')
+                ->field('files')
+                    ->includesReferenceTo($mediaFile)
+            ->getQuery()
+            ->getSingleResult()
+        ;
+
+    }
+
+    /**
+     * Get a media file document by its id
+     * @param string $id Media file id
+     * @return MediaFile Media file document
+     */
+    public function getMediaFileById($id)
+    {
+        // Grab the media file document
+        return $this
+            ->documentManager
+            ->getRepository('Storage:MediaFile')
             ->findOneById($id)
         ;
     }
@@ -237,6 +271,86 @@ class MongoDBStorage implements StorageInterface
 
         // If the original was not returned at this point, it no longer exists
         throw new OriginalNoLongerExistsException($mediaId);
+    }
+
+    /**
+     * Get file info for a file by its own id
+     * @param string $mediaFileId Id for the media file
+     * @return FileInfo File info for the file
+     */
+    public function getFileInfo($mediaFileId)
+    {
+        // Get the media file in question
+        $mediaFile = $this->getMediaFileById($mediaFileId);
+        if (null === $mediaFile) {
+            throw new DoesNotExistException($mediaFileId);
+        }
+
+        // Get the parent media document
+        $media = $this->getMediaByMediaFile($mediaFile);
+        if (null === $mediaFile) {
+            throw new DoesNotExistException($mediaFileId);
+        }
+
+        // Generate the base path
+        $basePath = $this->directory . '/' .
+            $this->fileKey->getBaseFileKey($media->getId());
+
+        // Create the file info object and return
+        return new FileInfo($media, $mediaFile, $basePath);
+    }
+
+    /**
+     * Get the info on a media file
+     * @param string $mediaId Id of the media
+     * @return MediaInfo Info
+     */
+    public function getMediaInfo($mediaId)
+    {
+        // Get the media document
+        $media = $this->getMediaById($mediaId);
+        if (null === $media) {
+            throw new DoesNotExistException($mediaId);
+        }
+
+        // Check that the media is ready
+        if (!$media->getReady()) {
+            throw new NotReadyException($mediaId);
+        }
+
+        // Create the new media info object
+        $mediaInfo = new MediaInfo();
+        $mediaInfo->setApplicationName($media->getApplicationName());
+        $mediaInfo->setHideToOthers($media->getHideToOthers());
+        $mediaInfo->setTags($media->getTags());
+        $mediaInfo->setSecurity($media->getSecurityTags());
+        $mediaInfo->setMediaType($media->getMediaType());
+
+        // Go through each file and generate its info
+        foreach($media->getFiles() as $file)
+        {
+            // Create a new media file info object
+            $mediaFileInfo = new MediaFileInfo();
+            $mediaFileInfo->setMimeType($file->getContentType());
+            $mediaFileInfo->setMediaFileId($file->getId());
+            $mediaFileInfo->setFileName($file->getFileName());
+            $mediaFileInfo->setSize(
+                $file->getWidth(),
+                $file->getHeight(),
+                $file->getBitrate()
+            );
+
+            // Check if this is an original file
+            if ($file->getOriginal()) {
+                $mediaInfo->setOriginalExists(true);
+            }
+
+            // Add the media file info to the media info
+            $mediaInfo->addMediaFileInfo($mediaFileInfo);
+        }
+
+        // return
+        return $mediaInfo;
     }
 
     /**

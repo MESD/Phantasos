@@ -73,7 +73,6 @@ class Preparer implements PreparerInterface
      * Handle upload
      * @param UploadedFile $file     Uploaded file
      * @param string       $mediaId  Id of the media
-     * @param string       $callback Optional route parameter to call when done
      * @return boolean Whether the module was successful in handling the file
      */
     public function handleUpload(UploadedFile $file, $mediaId)
@@ -85,7 +84,7 @@ class Preparer implements PreparerInterface
         }
 
         // Pass onto the processor
-        $this->processorQueuer->queueFile($file, $mediaId, $callback);
+        $this->processorQueuer->queueFile($file, $mediaId);
 
         // Mark as having been uploaded
         $this->storage->markAsUploaded($mediaId, $type);

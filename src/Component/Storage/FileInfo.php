@@ -64,6 +64,43 @@ class FileInfo
         return $this->media->getId();
     }
 
+    /**
+     * Check if a given application name is allowed to view this file
+     * @param string $applicationName Name of the application to check
+     * @return boolean Whether the application can view or not
+     */
+    public function canBeViewedBy($applicationName)
+    {
+        // if ($this->media->getHideToOthers()) {
+        //     if ($this->media->getApplicationName() === $applicationName) {
+        //         return true;
+        //     } else {
+        //         return false;
+        //     }
+        // } else {
+        //     return true;
+        // }
+        return true;
+    }
+
+    /**
+     * Get the full file path for the media file contained in this class
+     * @return string Full file path
+     */
+    public function getFullFilePath()
+    {
+        return $this->basePath . $this->mediaFile->getFileName();
+    }
+
+    /**
+     * Get the content type of the file
+     * @return string Content type
+     */
+    public function getContentType()
+    {
+        return $this->mediaFile->getContentType();
+    }
+
     /////////////////////////
     // GETTERS AND SETTERS //
     /////////////////////////

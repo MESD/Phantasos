@@ -7,6 +7,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 use Component\Preparer\UploadTicketRequest;
@@ -58,7 +60,7 @@ class ApiController extends Controller
         }
 
         if ($request->request->has('callback_route')) {
-            $uploadRequest->setCallbackRoute(
+            $uploadRequest->setCallback(
                 $request->request->get('callback_route')
             );
         }
@@ -128,5 +130,86 @@ class ApiController extends Controller
 
         // Respond
         return new Response('Upload accepted', 200);
+    }
+
+    /**
+     * @Route("/api/mediaInfo", name="getMediaInfo")
+     * @Method({"POST"})
+     *
+     * Get info on the requested media
+     */
+    public function getMediaInfoAction(Request $request)
+    {
+        // Get the parameters from the request
+        if (!$request->request->has('media_id')) {
+            return new Response('Field "media_id" is required', 400);
+        }
+
+        // Get the media info
+        try {
+            $mediaInfo = $this->get('phantasos.retrieval')->getMediaInfo(
+                $request->request->get('media_id'),
+                $this->get('security.context')->getToken()->getUsername()
+            );
+        } catch (\Exception $e) {
+            return new Response('Media was not found', 404);
+        }
+
+        // Check that media info exists
+        if (null === $mediaInfo) {
+            return new Response('Requested media does not exist', 404);
+        }
+
+        // Return the info
+        return new JsonResponse($mediaInfo->toArray());
+    }
+
+    /**
+     * @Route("/api/requestMedia", name="serveMedia")
+     * @Method({"POST"})
+     *
+     * Return raw media
+     */
+    public function serveMediaAction(Request $request)
+    {
+        // Get the media file id
+        if (!$request->request->has('media_file_id')) {
+            return new Response('Field "media_file_id" is required', 400);
+        }
+
+        // Get the file path
+        $filePath = $this->get('phantasos.retrieval')->getFilePath(
+            $request->request->get('media_file_id'),
+            $this->get('security.context')->getToken()->getUsername()
+        );
+
+        // Create the new response
+        $response = new BinaryFileResponse($filePath->getPath());
+        $response->headers->set('Content-Type', $filePath->getContentType());
+
+        // Return
+        return $response;
+    }
+
+    /**
+     * @Route("/api/test/{mediaFileId}", name="testtesttesttest")
+     * @Method({"GET"})
+     *
+     * Return raw media
+     */
+    public function testAction(Request $request, $mediaFileId)
+    {
+        // Get the file path
+        $filePath = $this->get('phantasos.retrieval')->getFilePath(
+            $mediaFileId,
+            $this->get('security.context')->getToken()->getUsername()
+        );
+
+        // Create the new response
+        $response = new BinaryFileResponse($filePath->getPath());
+        $response->headers->set('Content-Type', $filePath->getContentType());
+
+        // Return
+        return $response;
     }
 }

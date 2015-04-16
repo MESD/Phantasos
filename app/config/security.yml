@@ -8,7 +8,7 @@ security:
             pattern: ^/(_(profiler|wdt|error)|css|images|js)/
             security: false
         secured_area:
-            pattern: ^/api/(?!uploadMedia)
+            pattern: ^/api/(?!uploadMedia|test)
             stateless: true
             simple_preauth:
                 authenticator: tyhand.simple_apikey.authenticator

@@ -56,6 +56,20 @@ interface StorageInterface
     public function getOriginalFileInfo($mediaId);
 
     /**
+     * Get file info for a file by its own id
+     * @param string $mediaFileId Id for the media file
+     * @return FileInfo File info for the file
+     */
+    public function getFileInfo($mediaFileId);
+
+    /**
+     * Get the info on a media file
+     * @param string $mediaId Id of the media
+     * @return MediaInfo Info
+     */
+    public function getMediaInfo($mediaId);
+
+    /**
      * Add a file to the database
      * @param string $mediaId     Media Id
      * @param string $fullPath    Full file path

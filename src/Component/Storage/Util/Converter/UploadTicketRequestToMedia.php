@@ -30,7 +30,7 @@ class UploadTicketRequestToMedia
         $media->setTags($uploadRequest->getTags());
         $media->setSecurityTags($uploadRequest->getSecurityTags());
         $media->setHideToOthers($uploadRequest->getHideToOthers());
-        $media->setCallback($uploadRequest->getCallbackRoute());
+        $media->setCallback($uploadRequest->getCallback());
 
         // Return the new document
         return $media;
