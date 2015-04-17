@@ -134,21 +134,21 @@ class ApiController extends Controller
 
     /**
      * @Route("/api/mediaInfo", name="getMediaInfo")
-     * @Method({"POST"})
+     * @Method({"GET"})
      *
      * Get info on the requested media
      */
     public function getMediaInfoAction(Request $request)
     {
         // Get the parameters from the request
-        if (!$request->request->has('media_id')) {
+        if (!$request->query->has('media_id')) {
             return new Response('Field "media_id" is required', 400);
         }
 
         // Get the media info
         try {
             $mediaInfo = $this->get('phantasos.retrieval')->getMediaInfo(
-                $request->request->get('media_id'),
+                $request->query->get('media_id'),
                 $this->get('security.context')->getToken()->getUsername()
             );
         } catch (\Exception $e) {
@@ -166,20 +166,20 @@ class ApiController extends Controller
 
     /**
      * @Route("/api/requestMedia", name="serveMedia")
-     * @Method({"POST"})
+     * @Method({"GET"})
      *
      * Return raw media
      */
     public function serveMediaAction(Request $request)
     {
         // Get the media file id
-        if (!$request->request->has('media_file_id')) {
+        if (!$request->query->has('media_file_id')) {
             return new Response('Field "media_file_id" is required', 400);
         }
 
         // Get the file path
         $filePath = $this->get('phantasos.retrieval')->getFilePath(
-            $request->request->get('media_file_id'),
+            $request->query->get('media_file_id'),
             $this->get('security.context')->getToken()->getUsername()
         );
 
