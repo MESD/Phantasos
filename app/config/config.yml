@@ -47,8 +47,8 @@ assetic:
 old_sound_rabbit_mq:
     connections:
         default:
-            host: 'localhost'
-            port: 5672
+            host: %rabbitmq_host%
+            port: %rabbitmq_port%
             keepalive: true
     producers:
         process_upload:
@@ -64,7 +64,7 @@ old_sound_rabbit_mq:
 doctrine_mongodb:
     connections:
         default:
-            server: mongodb://localhost:27017
+            server: mongodb://%mongodb_host%:%monogdb_port%
             options:
                 username: %mongodb_username%
                 password: %mongodb_password%

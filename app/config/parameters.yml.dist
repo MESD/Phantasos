@@ -1,14 +1,5 @@
 # This file is a "template" of what your parameters.yml file should look like
 parameters:
-    database_driver:   pdo_mysql
-    database_host:     127.0.0.1
-    database_port:     ~
-    database_name:     symfony
-    database_user:     root
-    database_password: ~
-    # You should uncomment this if you want use pdo_sqlite
-    # database_path: "%kernel.root_dir%/data.db3"
-
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
     mailer_user:       ~
@@ -20,12 +11,21 @@ parameters:
     secret:            ThisTokenIsNotSoSecretChangeIt
 
     # MongoDB
+    mongodb_host: ~
+    mongodb_port: ~
     mongodb_username: ~
     mongodb_password: ~
     mongodb_database: ~
 
+    #RabbitMQ
+    rabbitmq_host: ~
+    rabbitmq_port: ~
+
+    #Phantasos
     phantasos_media_directory: /var/media
     phantasos_video_timeout: 60000
     phantasos_video_threads: 8
+
+    #FFMpeg
     ffmpeg_binary: '/usr/bin/ffmpeg'
     ffprobe_binary: '/usr/bin/ffprobe'
