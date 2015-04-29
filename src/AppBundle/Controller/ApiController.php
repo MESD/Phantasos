@@ -190,26 +190,4 @@ class ApiController extends Controller
         // Return
         return $response;
     }
-
-    /**
-     * @Route("/api/test/{mediaFileId}", name="testtesttesttest")
-     * @Method({"GET"})
-     *
-     * Return raw media
-     */
-    public function testAction(Request $request, $mediaFileId)
-    {
-        // Get the file path
-        $filePath = $this->get('phantasos.retrieval')->getFilePath(
-            $mediaFileId,
-            $this->get('security.context')->getToken()->getUsername()
-        );
-
-        // Create the new response
-        $response = new BinaryFileResponse($filePath->getPath());
-        $response->headers->set('Content-Type', $filePath->getContentType());
-
-        // Return
-        return $response;
-    }
 }
