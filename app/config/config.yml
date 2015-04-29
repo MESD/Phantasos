@@ -64,7 +64,7 @@ old_sound_rabbit_mq:
 doctrine_mongodb:
     connections:
         default:
-            server: mongodb://%mongodb_host%:%monogdb_port%
+            server: mongodb://%mongodb_host%:%mongodb_port%
             options:
                 username: %mongodb_username%
                 password: %mongodb_password%
