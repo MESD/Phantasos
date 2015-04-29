@@ -17,7 +17,7 @@ php app/console assetic:dump
 rm -rf app/cache/*
 rm -rf app/logs/*
 rm -rf app/sessions/*
-sudo chown -R apache:appdevs .
+sudo chown -R apache:apache .
 sudo rsync -az --delete --exclude-from exclude.txt . /var/www/phantasos/
 sudo chown -R `whoami`:`whoami` .
 sudo systemctl reload httpd.service
