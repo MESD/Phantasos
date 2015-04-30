@@ -88,7 +88,7 @@ class ApiController extends Controller
 
     /**
      * @Route("/api/uploadMedia/{ticketId}", name="uploadMedia")
-     * @Method({"POST"})
+     * @Method({"POST", "OPTIONS"})
      *
      * Action to upload media to the file store
      */
