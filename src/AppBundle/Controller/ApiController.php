@@ -94,6 +94,15 @@ class ApiController extends Controller
      */
     public function uploadMediaAction(Request $request, $ticketId)
     {
+        // Check for the options request
+        if ('OPTIONS' === $request->getMethod()) {
+            $response = new Response('Ok', 200);
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')
+            $response->headers->set('Access-Control-Allow-Headers', 'origin, x-requested-with, content-type');
+            return $response;
+        }
+        
         // Check that the ticket id exists
         $media = $this->get('phantasos.storage')->getMediaById($ticketId);
         if (null === $media) {
