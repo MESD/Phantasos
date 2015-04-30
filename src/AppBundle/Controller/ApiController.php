@@ -94,6 +94,12 @@ class ApiController extends Controller
      */
     public function uploadMediaAction(Request $request, $ticketId)
     {
+        // NOTE!!! The CORS headers here really need to be cleaned up!!!!
+        ////
+        /////
+        //////
+        
+        
         // Check for the options request
         if ('OPTIONS' === $request->getMethod()) {
             $response = new Response('Ok', 200);
