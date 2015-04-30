@@ -107,23 +107,43 @@ class ApiController extends Controller
         // Check that the ticket id exists
         $media = $this->get('phantasos.storage')->getMediaById($ticketId);
         if (null === $media) {
-            return new Response('Not a valid ticket', 400);
+            $response = new Response('Not a valid ticket', 400);
+            $response->headers->set('Access-Control-Allow-Credentials', 'true');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, PUT, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, X-PINGOTHER, X-File-Name, Cache-Control, Origin');
+            return $response;
         }
 
         // Check that an upload has not already happened
         if (true === $media->getUploaded()) {
-            return new Response('Upload ticket already used', 400);
+            $response = new Response('Upload ticket already used', 400);
+            $response->headers->set('Access-Control-Allow-Credentials', 'true');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, PUT, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, X-PINGOTHER, X-File-Name, Cache-Control, Origin');
+            return $response;
         }
 
         // Check that the ticket has not expired
         $current = new \DateTime();
         if ($current > $media->getUploadExpiration()) {
-            return new Response('Not a valid ticket', 400);
+            $response = new Response('Not a valid ticket', 400);
+            $response->headers->set('Access-Control-Allow-Credentials', 'true');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, PUT, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, X-PINGOTHER, X-File-Name, Cache-Control, Origin');
+            return $response;
         }
 
         // Check that the file was given
         if (!$request->files->has('file_data')) {
-            return new Response('File was not given', 400);
+            $response = new Response('File was not given', 400);
+            $response->headers->set('Access-Control-Allow-Credentials', 'true');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, PUT, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, X-PINGOTHER, X-File-Name, Cache-Control, Origin');
+            return $response;
         }
 
         // Put the file into storage
@@ -139,7 +159,12 @@ class ApiController extends Controller
         }
 
         // Respond
-        return new Response('Upload accepted', 200);
+        $response = new Response('Upload accepted', 200);
+        $response->headers->set('Access-Control-Allow-Credentials', 'true');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, PUT, OPTIONS');
+        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, X-PINGOTHER, X-File-Name, Cache-Control, Origin');
+        return $response;
     }
 
     /**
