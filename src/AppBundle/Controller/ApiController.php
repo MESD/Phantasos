@@ -97,10 +97,10 @@ class ApiController extends Controller
         // Check for the options request
         if ('OPTIONS' === $request->getMethod()) {
             $response = new Response('Ok', 200);
-            // $response->headers->set('Access-Control-Allow-Credentials', 'true');
+            $response->headers->set('Access-Control-Allow-Credentials', 'true');
             $response->headers->set('Access-Control-Allow-Origin', '*');
-            // $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, PUT, OPTIONS');
-            // $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, X-PINGOTHER, X-File-Name, Cache-Control, Origin');
+            $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, PUT, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, X-PINGOTHER, X-File-Name, Cache-Control, Origin');
             return $response;
         }
         
