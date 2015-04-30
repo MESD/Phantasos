@@ -99,7 +99,7 @@ class ApiController extends Controller
             $response = new Response('Ok', 200);
             $response->headers->set('Access-Control-Allow-Origin', '*');
             $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
-            $response->headers->set('Access-Control-Allow-Headers', 'origin, x-requested-with, content-type');
+            $response->headers->set('Access-Control-Allow-Headers', 'origin, x-requested-with, content-type, cache-control');
             return $response;
         }
         
