@@ -3,6 +3,7 @@
 namespace Component\Processor\Processors;
 
 use Component\Processor\Processors\AbstractProcessor;
+use Component\Processor\StatusManager;
 use Component\Storage\FileInfo;
 use Component\Preparer\Types\MediaTypes;
 
@@ -127,23 +128,42 @@ class AudioProcessor extends AbstractProcessor
         $originalPath = $file->getBasePath()
             . $file->getMediaFile()->getFilename();
 
+        // Create a new status manager
+        $statusManager = new StatusManager(
+            $file->getMediaId(),
+            $this->storage,
+            count($this->getExports()) * 2
+        );
+
         // Create the different sizes
         foreach ($this->getExports() as $name => $size)
         {
+            // Create an anonymous function for progress callback
+            $progressFunc = function($audio, $format, $percentage) use ($statusManager)
+            {
+                $statusManager->setCurrentPercentage($percentage);
+            };
+
             // Create the formats
             $mp3 = new Mp3();
             $mp3->setAudioChannels(2);
             $mp3->setAudioKiloBitrate($size['bitrate']);
+            $mp3->on('progress', $progressFunc);
             $vorbis = new Vorbis();
             $vorbis->setAudioChannels(2);
             $vorbis->setAudioKiloBitrate($size['bitrate']);
+            $vorbis->on('progress', $progressFunc);
 
             // Resize and encode the video
             $audio = $ffmpeg->open($originalPath);
-            $audio
-                ->save($mp3, $file->getBasePath() . $name . '.mp3')
-                ->save($vorbis, $file->getBasePath() . $name . '.oga')
-            ;
+
+            $statusManager->startNewPhase();
+            $audio->save($mp3, $file->getBasePath() . $name . '.mp3');
+            $statusManager->endPhase();
+
+            $statusManager->startNewPhase();
+            $audio->save($vorbis, $file->getBasePath() . $name . '.oga');
+            $statusManager->endPhase();
 
             $this->storage->addFile($file->getMediaId(),
                 $file->getBasePath() . $name . '.mp3',

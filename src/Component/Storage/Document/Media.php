@@ -5,6 +5,7 @@ namespace Component\Storage\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\Common\Collections\ArrayCollection;
 use Component\Storage\Document\MediaFile;
+use Component\Processor\Enum\StatusEnum;
 
 /**
  * @MongoDB\Document(collection="media")
@@ -79,6 +80,18 @@ class Media
     private $ready;
 
     /**
+     * Where the processing process is when processing
+     * @MongoDB\Float
+     */
+    private $processingPercentage;
+
+    /**
+     * Current status of the media
+     * @MongoDB\String
+     */
+    private $status;
+
+    /**
      * Attached media files
      * @MongoDB\ReferenceMany(
      *      strategy="addToSet",
@@ -104,6 +117,8 @@ class Media
         $this->ready = false;
         $this->files = new ArrayCollection();
         $this->callbackSent = false;
+        $this->processingPercentage = 0;
+        $this->status = StatusEnum::getDefaultStatus();
     }
 
     /////////////////////////
@@ -370,6 +385,46 @@ class Media
     public function setCallbackSent($callbackSent)
     {
         $this->callbackSent = $callbackSent;
+        return $this;
+    }
+
+    /**
+     * Get the value of Where the processing process is when processing
+     * @return mixed
+     */
+    public function getProcessingPercentage()
+    {
+        return $this->processingPercentage;
+    }
+
+    /**
+     * Set the value of Where the processing process is when processing
+     * @param mixed processingPercentage
+     * @return self
+     */
+    public function setProcessingPercentage($processingPercentage)
+    {
+        $this->processingPercentage = $processingPercentage;
+        return $this;
+    }
+
+    /**
+     * Get the value of Current status of the media
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Set the value of Current status of the media
+     * @param mixed status
+     * @return self
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
         return $this;
     }
 }

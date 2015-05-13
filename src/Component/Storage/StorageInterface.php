@@ -70,6 +70,20 @@ interface StorageInterface
     public function getMediaInfo($mediaId);
 
     /**
+     * Update the status of media
+     * @param string  $mediaId    Media id of the media to update
+     * @param string  $status     Status to set
+     */
+    public function updateMediaStatus($mediaId, $status);
+
+    /**
+     * Update the percentage for the media
+     * @param string $mediaId    Media id of the media to update
+     * @param float  $percentage Percentage complete
+     */
+    public function updateMediaPercentage($mediaId, $percentage);
+
+    /**
      * Add a file to the database
      * @param string $mediaId     Media Id
      * @param string $fullPath    Full file path

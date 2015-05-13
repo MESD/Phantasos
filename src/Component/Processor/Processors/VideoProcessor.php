@@ -3,6 +3,7 @@
 namespace Component\Processor\Processors;
 
 use Component\Processor\Processors\AbstractProcessor;
+use Component\Processor\StatusManager;
 use Component\Storage\FileInfo;
 use Component\Preparer\Types\MediaTypes;
 
@@ -132,16 +133,32 @@ class VideoProcessor extends AbstractProcessor
         $originalPath = $file->getBasePath()
             . $file->getMediaFile()->getFilename();
 
+        // Create a new status manager
+        $statusManager = new StatusManager(
+            $file->getMediaId(),
+            $this->storage,
+            count($this->getExports()) * 3
+        );
+
         // Create the different sizes
         foreach ($this->getExports() as $name => $size)
         {
+            // Create an anonymous function for progress callback
+            $progressFunc = function($video, $format, $percentage) use ($statusManager)
+            {
+                $statusManager->setCurrentPercentage($percentage);
+            };
+
             // Generate the formats
             $h264 = new X264('libmp3lame', 'libx264');
             $h264->setKiloBitrate($size['bitrate']);
+            $h264->on('progress', $progressFunc);
             $webm = new WebM();
             $webm->setKiloBitrate($size['bitrate']);
+            $webm->on('progress', $progressFunc);
             $ogg = new Ogg();
             $ogg->setKiloBitrate($size['bitrate']);
+            $ogg->on('progress', $progressFunc);
 
             // Resize and encode the video
             $video = $ffmpeg->open($originalPath);
@@ -154,11 +171,18 @@ class VideoProcessor extends AbstractProcessor
                 ->frame(TimeCode::fromSeconds(10))
                 ->save($file->getBasePath() . $name . '-frame.png')
             ;
-            $video
-                ->save($h264, $file->getBasePath() . $name . '.mp4')
-                ->save($webm, $file->getBasePath() . $name . '.webm')
-                ->save($ogg, $file->getBasePath() . $name . '.ogv')
-            ;
+
+            $statusManager->startNewPhase();
+            $video->save($h264, $file->getBasePath() . $name . '.mp4');
+            $statusManager->endPhase();
+
+            $statusManager->startNewPhase();
+            $video->save($webm, $file->getBasePath() . $name . '.webm');
+            $statusManager->endPhase();
+
+            $statusManager->startNewPhase();
+            $video->save($ogg, $file->getBasePath() . $name . '.ogv');
+            $statusManager->endPhase();
 
             // Register the files in the db
             $this->storage->addFile($file->getMediaId(),

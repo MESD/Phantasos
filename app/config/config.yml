@@ -60,6 +60,7 @@ old_sound_rabbit_mq:
             exchange_options: { name: 'process_upload', type: direct }
             queue_options: { name: 'process_upload' }
             callback: phantasos.processor
+            qos_options: { prefetch_size: 0, prefetch_count: 1, global: false }
 
 doctrine_mongodb:
     connections:

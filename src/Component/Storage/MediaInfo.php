@@ -50,6 +50,24 @@ class MediaInfo
      */
     private $files;
 
+    /**
+     * Whether the file is ready for viewing
+     * @var boolean
+     */
+    private $ready;
+
+    /**
+     * Current status
+     * @var string
+     */
+    private $status;
+
+    /**
+     * Processing percentage if in status is processing
+     * @var float
+     */
+    private $processingPercentage;
+
     /////////////////
     // CONSTRUCTOR //
     /////////////////
@@ -86,7 +104,10 @@ class MediaInfo
             'original_exists' => $this->originalExists,
             'tags' => $this->tags,
             'security' => $this->security,
-            'files' => $mediaFiles
+            'files' => $mediaFiles,
+            'ready' => $this->ready,
+            'status' => $this->status,
+            'processing_percentage' => $this->processingPercentage
         );
     }
 
@@ -234,5 +255,65 @@ class MediaInfo
     public function getFiles()
     {
         return $this->files;
+    }
+
+    /**
+     * Get the value of Whether the file is ready for viewing
+     * @return boolean
+     */
+    public function getReady()
+    {
+        return $this->ready;
+    }
+
+    /**
+     * Set the value of Whether the file is ready for viewing
+     * @param boolean ready
+     * @return self
+     */
+    public function setReady($ready)
+    {
+        $this->ready = $ready;
+        return $this;
+    }
+
+    /**
+     * Get the value of Current status
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Set the value of Current status
+     * @param string status
+     * @return self
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * Get the value of Processing percentage if in status is processing
+     * @return float
+     */
+    public function getProcessingPercentage()
+    {
+        return $this->processingPercentage;
+    }
+
+    /**
+     * Set the value of Processing percentage if in status is processing
+     * @param float processingPercentage
+     * @return self
+     */
+    public function setProcessingPercentage($processingPercentage)
+    {
+        $this->processingPercentage = $processingPercentage;
+        return $this;
     }
 }

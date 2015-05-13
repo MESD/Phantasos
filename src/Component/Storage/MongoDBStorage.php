@@ -313,11 +313,6 @@ class MongoDBStorage implements StorageInterface
             throw new DoesNotExistException($mediaId);
         }
 
-        // Check that the media is ready
-        if (!$media->getReady()) {
-            throw new NotReadyException($mediaId);
-        }
-
         // Create the new media info object
         $mediaInfo = new MediaInfo();
         $mediaInfo->setApplicationName($media->getApplicationName());
@@ -325,32 +320,85 @@ class MongoDBStorage implements StorageInterface
         $mediaInfo->setTags($media->getTags());
         $mediaInfo->setSecurity($media->getSecurityTags());
         $mediaInfo->setMediaType($media->getMediaType());
+        $mediaInfo->setStatus($media->getStatus());
+        $mediaInfo->setProcessingPercentage($media->getProcessingPercentage());
+        $mediaInfo->setReady($media->getReady());
 
         // Go through each file and generate its info
-        foreach($media->getFiles() as $file)
-        {
-            // Create a new media file info object
-            $mediaFileInfo = new MediaFileInfo();
-            $mediaFileInfo->setMimeType($file->getContentType());
-            $mediaFileInfo->setMediaFileId($file->getId());
-            $mediaFileInfo->setFileName($file->getFileName());
-            $mediaFileInfo->setSize(
-                $file->getWidth(),
-                $file->getHeight(),
-                $file->getBitrate()
-            );
+        if ($media->isReady()) {
+            foreach($media->getFiles() as $file)
+            {
+                // Create a new media file info object
+                $mediaFileInfo = new MediaFileInfo();
+                $mediaFileInfo->setMimeType($file->getContentType());
+                $mediaFileInfo->setMediaFileId($file->getId());
+                $mediaFileInfo->setFileName($file->getFileName());
+                $mediaFileInfo->setSize(
+                    $file->getWidth(),
+                    $file->getHeight(),
+                    $file->getBitrate()
+                );
 
-            // Check if this is an original file
-            if ($file->getOriginal()) {
-                $mediaInfo->setOriginalExists(true);
+                // Check if this is an original file
+                if ($file->getOriginal()) {
+                    $mediaInfo->setOriginalExists(true);
+                }
+
+                // Add the media file info to the media info
+                $mediaInfo->addMediaFileInfo($mediaFileInfo);
             }
-
-            // Add the media file info to the media info
-            $mediaInfo->addMediaFileInfo($mediaFileInfo);
         }
 
         // return
         return $mediaInfo;
+    }
+
+    /**
+     * Update the status of media
+     * @param string  $mediaId    Media id of the media to update
+     * @param string  $status     Status to set
+     */
+    public function updateMediaStatus($mediaId, $status)
+    {
+        // Load the media
+        $media = $this->getMediaById($mediaId);
+        if (null === $media) {
+            throw new DoesNotExistException($mediaId);
+        }
+
+        // Set
+        $media->setStatus($status);
+
+        // Persist and flush
+        $this->documentManager->persist($media);
+        $this->documentManager->flush($media);
+
+        // Return
+        return true;
+    }
+
+    /**
+     * Update the percentage for the media
+     * @param string $mediaId    Media id of the media to update
+     * @param float  $percentage Percentage complete
+     */
+    public function updateMediaPercentage($mediaId, $percentage)
+    {
+        // Load the media
+        $media = $this->getMediaById($mediaId);
+        if (null === $media) {
+            throw new DoesNotExistException($mediaId);
+        }
+
+        // Set
+        $media->setProcessingPercentage($percentage);
+
+        // Persist and flush
+        $this->documentManager->persist($media);
+        $this->documentManager->flush($media);
+
+        // Return
+        return true;
     }
 
     /**

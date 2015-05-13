@@ -3,6 +3,7 @@
 namespace Component\Processor\Processors;
 
 use Component\Processor\Processors\AbstractProcessor;
+use Component\Processor\StatusManager;
 use Component\Storage\FileInfo;
 use Component\Preparer\Types\MediaTypes;
 
@@ -44,6 +45,17 @@ class PdfProcessor extends AbstractProcessor
      */
     public function process(FileInfo $file)
     {
+        // Create a new status manager
+        $statusManager = new StatusManager(
+            $file->getMediaId(),
+            $this->storage,
+            1
+        );
+
+        // Start and end the phase
+        $statusManager->startNewPhase();
+        $statusManager->endPhase();
+
         // Mark the pdf as ready
         $this->storage->markAsReady($file->getMediaId());
 
