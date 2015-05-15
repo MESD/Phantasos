@@ -26,6 +26,22 @@ framework:
     fragments:       ~
     http_method_override: true
 
+monolog:
+    handlers:
+        mail:
+            type: fingers_crossed
+            action_level: critical
+            handler: buffered
+        buffered:
+            type: buffer
+            handler: swift
+        swift:
+            type: swift_mailer
+            from_email: %phantasos_error_from_email%
+            to_email: %phantasos_error_to_email%
+            subject: Phantasos Error!
+            level: debug
+
 # Twig Configuration
 twig:
     debug:            "%kernel.debug%"
@@ -88,4 +104,3 @@ swiftmailer:
     host:      "%mailer_host%"
     username:  "%mailer_user%"
     password:  "%mailer_password%"
-    spool:     { type: memory }

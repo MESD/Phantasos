@@ -25,6 +25,9 @@ parameters:
     phantasos_media_directory: /var/media
     phantasos_video_timeout: 60000
     phantasos_video_threads: 8
+    phantasos_processor_count: 2
+    phantasos_error_from_email: ~
+    phantasos_error_to_email: ~
 
     #FFMpeg
     ffmpeg_binary: '/usr/bin/ffmpeg'

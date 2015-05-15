@@ -33,3 +33,6 @@
 
 # Composer PHAR
 /composer.phar
+
+# Odds and Ends
+last_alert_email.txt
