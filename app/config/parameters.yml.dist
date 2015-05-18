@@ -20,6 +20,8 @@ parameters:
     #RabbitMQ
     rabbitmq_host: ~
     rabbitmq_port: ~
+    rabbitmq_user: guest
+    rabbitmq_password: guest
 
     #Phantasos
     phantasos_media_directory: /var/media

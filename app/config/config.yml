@@ -65,6 +65,8 @@ old_sound_rabbit_mq:
         default:
             host: %rabbitmq_host%
             port: %rabbitmq_port%
+            user: %rabbitmq_user%
+            password: %rabbitmq_password%
             keepalive: true
     producers:
         process_upload:
