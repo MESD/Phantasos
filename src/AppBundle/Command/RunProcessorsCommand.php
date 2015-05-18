@@ -154,7 +154,7 @@ class RunProcessorsCommand extends ContainerAwareCommand
         $this->messagePool[] = $message;
         $now = time();
         if (null === $this->lastEmail || $now >= ($this->emailTimeout + $this->lastEmail)) {
-            $this->logger->critical(implode('<br>', $this->messagePool));
+            $this->logger->alert(implode('<br>', $this->messagePool));
             $this->lastEmail = time();
             file_put_contents(getcwd() . '/last_alert_email.txt', $this->lastEmail);
             $this->messagePool = array();

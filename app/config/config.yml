@@ -30,7 +30,7 @@ monolog:
     handlers:
         mail:
             type: fingers_crossed
-            action_level: critical
+            action_level: alert
             handler: buffered
         buffered:
             type: buffer

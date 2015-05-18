@@ -20,4 +20,4 @@ rm -rf app/sessions/*
 sudo chown -R apache:apache .
 sudo rsync -az --delete --exclude-from exclude.txt . /var/www/phantasos/
 sudo chown -R `whoami`:`whoami` .
-sudo systemctl reload phantasos-processor.service
+sudo systemctl restart phantasos-processor.service
