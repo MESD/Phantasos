@@ -21,6 +21,7 @@ if [ -f VERSION ]; then
     echo "Version $VERSION_INPUT:" > tmpfile
     git log --pretty=format:" -%s" "v$ORIGINAL_STRING"...HEAD >> tmpfile
     echo "" >> tmpfile
+    echo "" >> tmpfile
     cat CHANGES >> tmpfile
     mv tmpfile CHANGES
     git add CHANGES VERSION
