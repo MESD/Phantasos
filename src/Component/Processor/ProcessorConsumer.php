@@ -8,6 +8,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 use Component\Storage\StorageInterface;
 use Component\Exceptions\Api\MissingParameterException;
 use Component\Processor\ProcessorContainer;
+use Component\Processor\Enum\StatusEnum;
 
 /**
  * Consumer for the media processing should be called via RabbitMQ
@@ -70,6 +71,10 @@ class ProcessorConsumer implements ConsumerInterface
         $original = $this->storage->getOriginalFileInfo($message['mediaId']);
 
         // Have the container find the processor and process
-        $this->processorContainer->process($original);
+        try {
+            $this->processorContainer->process($original);
+        } catch (\Exception $e) {
+            $this->storage->updateMediaStatus($message['mediaId'], StatusEnum::STATUS_FAILED)
+        }
     }
 }
