@@ -164,6 +164,12 @@ class VideoProcessor extends AbstractProcessor
 
                 // Resize and encode the video
                 $video = $ffmpeg->open($originalPath);
+
+                // Check for the malformed videos
+                if (!method_exists($video, 'resize')) {
+                    throw new \Exception('Malformed video');
+                }
+
                 $video
                     ->filters()
                     ->resize(new Dimension($size['width'], $size['height']))
