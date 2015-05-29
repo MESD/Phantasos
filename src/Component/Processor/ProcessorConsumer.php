@@ -73,8 +73,6 @@ class ProcessorConsumer implements ConsumerInterface
         // Have the container find the processor and process
         try {
             $this->processorContainer->process($original);
-        } catch (\Exception $e) {
-            $this->storage->updateMediaStatus($message['mediaId'], StatusEnum::STATUS_FAILED);
         }
     }
 }
