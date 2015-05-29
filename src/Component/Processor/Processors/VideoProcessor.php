@@ -159,75 +159,70 @@ class VideoProcessor extends AbstractProcessor
             count($this->getExports()) * 3
         );
 
-        try {
-            // Create the different sizes
-            foreach ($this->getExports() as $name => $size)
+        // Create the different sizes
+        foreach ($this->getExports() as $name => $size)
+        {
+            // Create an anonymous function for progress callback
+            $progressFunc = function($video, $format, $percentage) use ($statusManager)
             {
-                // Create an anonymous function for progress callback
-                $progressFunc = function($video, $format, $percentage) use ($statusManager)
-                {
-                    $statusManager->setCurrentPercentage($percentage);
-                };
+                $statusManager->setCurrentPercentage($percentage);
+            };
 
-                // Generate the formats
-                $h264 = new X264('libmp3lame', 'libx264');
-                $h264->setKiloBitrate($size['bitrate']);
-                $h264->on('progress', $progressFunc);
-                $webm = new WebM();
-                $webm->setKiloBitrate($size['bitrate']);
-                $webm->on('progress', $progressFunc);
-                $ogg = new Ogg();
-                $ogg->setKiloBitrate($size['bitrate']);
-                $ogg->on('progress', $progressFunc);
+            // Generate the formats
+            $h264 = new X264('libmp3lame', 'libx264');
+            $h264->setKiloBitrate($size['bitrate']);
+            $h264->on('progress', $progressFunc);
+            $webm = new WebM();
+            $webm->setKiloBitrate($size['bitrate']);
+            $webm->on('progress', $progressFunc);
+            $ogg = new Ogg();
+            $ogg->setKiloBitrate($size['bitrate']);
+            $ogg->on('progress', $progressFunc);
 
-                // Resize and encode the video
-                $video = $ffmpeg->open($originalPath);
+            // Resize and encode the video
+            $video = $ffmpeg->open($originalPath);
 
-                $video
-                    ->filters()
-                    ->resize(new Dimension($size['width'], $size['height']))
-                    ->synchronize()
-                ;
-                $video
-                    ->frame(TimeCode::fromSeconds(10))
-                    ->save($file->getBasePath() . $name . '-frame.png')
-                ;
+            $video
+                ->filters()
+                ->resize(new Dimension($size['width'], $size['height']))
+                ->synchronize()
+            ;
+            $video
+                ->frame(TimeCode::fromSeconds(10))
+                ->save($file->getBasePath() . $name . '-frame.png')
+            ;
 
-                $statusManager->startNewPhase();
-                $video->save($h264, $file->getBasePath() . $name . '.mp4');
-                $statusManager->endPhase();
+            $statusManager->startNewPhase();
+            $video->save($h264, $file->getBasePath() . $name . '.mp4');
+            $statusManager->endPhase();
 
-                $statusManager->startNewPhase();
-                $video->save($webm, $file->getBasePath() . $name . '.webm');
-                $statusManager->endPhase();
+            $statusManager->startNewPhase();
+            $video->save($webm, $file->getBasePath() . $name . '.webm');
+            $statusManager->endPhase();
 
-                $statusManager->startNewPhase();
-                $video->save($ogg, $file->getBasePath() . $name . '.ogv');
-                $statusManager->endPhase();
+            $statusManager->startNewPhase();
+            $video->save($ogg, $file->getBasePath() . $name . '.ogv');
+            $statusManager->endPhase();
 
-                // Register the files in the db
-                $this->storage->addFile($file->getMediaId(),
-                    $file->getBasePath() . $name . '-frame.png',
-                    $name . '-frame.png', 'image/png', $size['width'], $size['height']);
+            // Register the files in the db
+            $this->storage->addFile($file->getMediaId(),
+                $file->getBasePath() . $name . '-frame.png',
+                $name . '-frame.png', 'image/png', $size['width'], $size['height']);
 
-                $this->storage->addFile($file->getMediaId(),
-                    $file->getBasePath() . $name . '.mp4',
-                    $name . '.mp4', 'video/mp4',
-                    $size['width'], $size['height'], $size['bitrate']);
+            $this->storage->addFile($file->getMediaId(),
+                $file->getBasePath() . $name . '.mp4',
+                $name . '.mp4', 'video/mp4',
+                $size['width'], $size['height'], $size['bitrate']);
 
-                $this->storage->addFile($file->getMediaId(),
-                    $file->getBasePath() . $name . '.webm',
-                    $name . '.webm', 'video/webm',
-                    $size['width'], $size['height'], $size['bitrate']);
+            $this->storage->addFile($file->getMediaId(),
+                $file->getBasePath() . $name . '.webm',
+                $name . '.webm', 'video/webm',
+                $size['width'], $size['height'], $size['bitrate']);
 
-                $this->storage->addFile($file->getMediaId(),
-                    $file->getBasePath() . $name . '.ogv',
-                    $name . '.ogv', 'video/ogg',
-                    $size['width'], $size['height'], $size['bitrate']);
-            }
-        } catch (\Exception $e) {
-            $this->storage->updateMediaStatus($file->getMediaId(), StatusEnum::STATUS_FAILED);
-            return true;
+            $this->storage->addFile($file->getMediaId(),
+                $file->getBasePath() . $name . '.ogv',
+                $name . '.ogv', 'video/ogg',
+                $size['width'], $size['height'], $size['bitrate']);
         }
 
         // Mark the video as ready
