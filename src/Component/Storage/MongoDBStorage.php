@@ -14,6 +14,7 @@ use Component\Exceptions\Media\DoesNotExistException;
 use Component\Exceptions\Media\NotUploadedException;
 use Component\Exceptions\Media\OriginalNoLongerExistsException;
 use Component\Exceptions\Media\NotReadyException;
+use Component\Processor\Enum\StatusEnum;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -443,5 +444,41 @@ class MongoDBStorage implements StorageInterface
         $this->documentManager->flush();
 
         return true;
+    }
+
+    /**
+     * Change the media type (for use in cases where the MIME type was misleading)
+     * @param string $mediaId Media Id
+     * @param string $type    New media type
+     */
+    public function changeMediaType($mediaId, $type)
+    {
+        // Load the media
+        $media = $this->getMediaById($mediaId);
+        if (null === $media) {
+            throw new DoesNotExistException($mediaId);
+        }
+
+        // Edit the media type
+        $media->setMediaType($type);
+
+        // Flush
+        $this->documentManager->flush();
+
+        return true;
+    }
+
+    /**
+     * Return a list of medias that failed to process
+     * @return array List of failures
+     */
+    public function getFailedMedia()
+    {
+        // Get the media items that have a failed status
+        return $this
+            ->documentManager
+            ->getRepository('Storage:Media')
+            ->findByStatus(StatusEnum::STATUS_FAILED)
+        ;
     }
 }

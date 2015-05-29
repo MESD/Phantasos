@@ -48,17 +48,25 @@ class VideoProcessor extends AbstractProcessor
      */
     private $ffprobeBinary;
 
+    /**
+     * To fallback on with audio files in video containers
+     * @var AudioProcessor
+     */
+    private $audioProcessor;
+
     /////////////////
     // CONSTRUCTOR //
     /////////////////
 
     public function __construct(
+        AudioProcessor $audioProcessor,
         $timeout = 60000,
         $threads = 8,
         $ffmpegBinary = '/usr/bin/ffmpeg',
         $ffprobeBinary = '/usr/bin/ffprobe'
     ) {
         // Set
+        $this->audioProcessor = $audioProcessor;
         $this->timeout = $timeout;
         $this->threads = $threads;
         $this->ffmpegBinary = $ffmpegBinary;
@@ -134,6 +142,16 @@ class VideoProcessor extends AbstractProcessor
         $originalPath = $file->getBasePath()
             . $file->getMediaFile()->getFilename();
 
+        // Check that the video is not actually a misguided audio file
+        $test = $ffmpeg->open($originalPath);
+        if (!method_exists($test->filters(), 'resize')) {
+            // Change media type to audio
+            $this->storage->changeMediaType($file->getMediaId(), MediaTypes::AUDIO);
+            // Send to the audio processor
+            return $this->audioProcessor->process($file);
+            // END
+        }
+
         // Create a new status manager
         $statusManager = new StatusManager(
             $file->getMediaId(),
@@ -164,11 +182,6 @@ class VideoProcessor extends AbstractProcessor
 
                 // Resize and encode the video
                 $video = $ffmpeg->open($originalPath);
-
-                // Check for the malformed videos
-                if (!method_exists($video, 'resize')) {
-                    throw new \Exception('Malformed video');
-                }
 
                 $video
                     ->filters()
