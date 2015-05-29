@@ -20,4 +20,11 @@ interface ProcessorQueuerInterface
      * @return boolean True if the file is placed into a work queue
      */
     public function queueFile(UploadedFile $original, $mediaId);
+
+    /**
+     * Requeue a media file
+     * @param string $mediaId Id of media to requeue
+     * @return boolean True if the file is placed into a work queue
+     */
+    public function requeueMedia($mediaId);
 }

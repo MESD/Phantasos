@@ -22,8 +22,8 @@ services:
         class: Component\Processor\Processors\PdfProcessor
         tags:
             - { name: phantasos.tag.processor }
-    phantasos.video_processor:
-        class: Component\Processor\Processors\VideoProcessor
+    phantasos.audio_processor:
+        class: Component\Processor\Processors\AudioProcessor
         arguments:
             - %phantasos_video_timeout%
             - %phantasos_video_threads%
@@ -31,9 +31,10 @@ services:
             - %ffprobe_binary%
         tags:
             - { name: phantasos.tag.processor }
-    phantasos.audio_processor:
-        class: Component\Processor\Processors\AudioProcessor
+    phantasos.video_processor:
+        class: Component\Processor\Processors\VideoProcessor
         arguments:
+            - @phantasos.audio_processor
             - %phantasos_video_timeout%
             - %phantasos_video_threads%
             - %ffmpeg_binary%

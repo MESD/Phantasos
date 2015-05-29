@@ -4,6 +4,7 @@ namespace Component\Processor;
 
 use Component\Processor\ProcessorQueuerInterface;
 use Component\Processor\ProcessorContainer;
+use Component\Processor\Enum\StatusEnum;
 use Component\Storage\StorageInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use OldSound\RabbitMqBundle\RabbitMq\Producer;
@@ -78,6 +79,26 @@ class ProcessorQueuer implements ProcessorQueuerInterface
     {
         // Place the original into storage
         $this->storage->addOriginalFile($original, $mediaId);
+
+        // Create a message
+        $msg = array('mediaId' => $mediaId);
+
+        // Publish the message to the Rabbit MQ server
+        $ret = $this->producer->publish(serialize($msg));
+
+        // Return that the file is going to be worked on
+        return true;
+    }
+
+    /**
+     * Requeue a media file
+     * @param string $mediaId Id of media to requeue
+     * @return boolean True if the file is placed into a work queue
+     */
+    public function requeueMedia($mediaId)
+    {
+        // Set the status to queued
+        $this->storage->updateMediaStatus($mediaId, StatusEnum::STATUS_QUEUED);
 
         // Create a message
         $msg = array('mediaId' => $mediaId);

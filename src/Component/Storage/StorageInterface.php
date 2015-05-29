@@ -84,6 +84,19 @@ interface StorageInterface
     public function updateMediaPercentage($mediaId, $percentage);
 
     /**
+     * Change the media type (for use in cases where the MIME type was misleading)
+     * @param string $mediaId Media Id
+     * @param string $type    New media type
+     */
+    public function changeMediaType($mediaId, $type);
+
+    /**
+     * Return a list of medias that failed to process
+     * @return array List of failures
+     */
+    public function getFailedMedia();
+
+    /**
      * Add a file to the database
      * @param string $mediaId     Media Id
      * @param string $fullPath    Full file path
