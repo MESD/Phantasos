@@ -71,8 +71,6 @@ class ProcessorConsumer implements ConsumerInterface
         $original = $this->storage->getOriginalFileInfo($message['mediaId']);
 
         // Have the container find the processor and process
-        try {
-            $this->processorContainer->process($original);
-        }
+        $this->processorContainer->process($original);
     }
 }
