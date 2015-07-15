@@ -98,7 +98,8 @@ class VideoProcessor extends AbstractProcessor
             'video/mpeg',
             'video/ogg',
             'video/webm',
-            'application/x-winamp'
+            'application/x-winamp',
+            'video/3gpp'
         );
     }
 
