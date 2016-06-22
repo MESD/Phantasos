@@ -54,6 +54,12 @@ class VideoProcessor extends AbstractProcessor
      */
     private $audioProcessor;
 
+    /**
+     * Logger
+     * @var \Psr\Logger\LoggerInterface
+     */
+    private $logger
+
     /////////////////
     // CONSTRUCTOR //
     /////////////////
@@ -63,7 +69,8 @@ class VideoProcessor extends AbstractProcessor
         $timeout = 60000,
         $threads = 8,
         $ffmpegBinary = '/usr/bin/ffmpeg',
-        $ffprobeBinary = '/usr/bin/ffprobe'
+        $ffprobeBinary = '/usr/bin/ffprobe',
+        $logger = null
     ) {
         // Set
         $this->audioProcessor = $audioProcessor;
@@ -71,6 +78,7 @@ class VideoProcessor extends AbstractProcessor
         $this->threads = $threads;
         $this->ffmpegBinary = $ffmpegBinary;
         $this->ffprobeBinary = $ffprobeBinary;
+        $this->logger = $logger;
     }
 
     //////////////////// /////
@@ -137,7 +145,7 @@ class VideoProcessor extends AbstractProcessor
             'ffprobe.binaries' => $this->ffprobeBinary,
             'timeout' => $this->timeout,
             'ffmpeg.threads' => $this->threads
-        ));
+        ), $this->logger);
 
         // Prep the storage for streaming
         $originalPath = $file->getBasePath()
@@ -157,7 +165,7 @@ class VideoProcessor extends AbstractProcessor
         $statusManager = new StatusManager(
             $file->getMediaId(),
             $this->storage,
-            count($this->getExports()) * 2
+            count($this->getExports()) * 3
         );
 
         // Create the different sizes
@@ -176,6 +184,9 @@ class VideoProcessor extends AbstractProcessor
             $webm = new WebM();
             $webm->setKiloBitrate($size['bitrate']);
             $webm->on('progress', $progressFunc);
+            $ogg = new Ogg();
+            $ogg->setKiloBitrate($size['bitrate']);
+            $ogg->on('progress', $progressFunc);
 
             // Resize and encode the video
             $video = $ffmpeg->open($originalPath);
@@ -198,6 +209,10 @@ class VideoProcessor extends AbstractProcessor
             $video->save($webm, $file->getBasePath() . $name . '.webm');
             $statusManager->endPhase();
 
+            $statusManager->startNewPhase();
+            $video->save($ogg, $file->getBasePath() . $name . '.ogv');
+            $statusManager->endPhase();
+
             // Register the files in the db
             $this->storage->addFile($file->getMediaId(),
                 $file->getBasePath() . $name . '-frame.png',
@@ -211,6 +226,11 @@ class VideoProcessor extends AbstractProcessor
             $this->storage->addFile($file->getMediaId(),
                 $file->getBasePath() . $name . '.webm',
                 $name . '.webm', 'video/webm',
+                $size['width'], $size['height'], $size['bitrate']);
+
+            $this->storage->addFile($file->getMediaId(),
+                $file->getBasePath() . $name . '.ogv',
+                $name . '.ogv', 'video/ogg',
                 $size['width'], $size['height'], $size['bitrate']);
         }
 
