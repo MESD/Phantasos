@@ -77,7 +77,7 @@ class VideoProcessor extends AbstractProcessor
         $this->timeout = $timeout;
         $this->threads = $threads;
         $this->ffmpegBinary = $ffmpegBinary;
-        $this->ffprobeBinary = $ff10probeBinary;
+        $this->ffprobeBinary = $ffprobeBinary;
         $this->logger = $logger;
     }
 
