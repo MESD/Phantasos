@@ -39,6 +39,7 @@ services:
             - %phantasos_video_threads%
             - %ffmpeg_binary%
             - %ffprobe_binary%
+            - @logger
         tags:
             - { name: phantasos.tag.processor }
     phantasos.processor:
