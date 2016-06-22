@@ -58,7 +58,7 @@ class VideoProcessor extends AbstractProcessor
      * Logger
      * @var \Psr\Logger\LoggerInterface
      */
-    private $logger
+    private $logger;
 
     /////////////////
     // CONSTRUCTOR //
@@ -77,7 +77,7 @@ class VideoProcessor extends AbstractProcessor
         $this->timeout = $timeout;
         $this->threads = $threads;
         $this->ffmpegBinary = $ffmpegBinary;
-        $this->ffprobeBinary = $ffprobeBinary;
+        $this->ffprobeBinary = $ff10probeBinary;
         $this->logger = $logger;
     }
 
