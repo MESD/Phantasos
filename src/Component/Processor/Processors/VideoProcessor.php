@@ -127,8 +127,8 @@ class VideoProcessor extends AbstractProcessor
     private function getExports()
     {
         return array(
-            'small' => array('width' => 640, 'height' => 360, 'bitrate' => 750),
-            'large' => array('width' => 1280, 'height' => 720, 'bitrate' => 2500)
+            'small' => array('width' => 640, 'height' => 360, 'bitrate' => 750, 'audio-bitrate' => 48),
+            'large' => array('width' => 1280, 'height' => 720, 'bitrate' => 2500, 'audio-bitrate' => 96)
         );
     }
 
@@ -180,12 +180,15 @@ class VideoProcessor extends AbstractProcessor
             // Generate the formats
             $h264 = new X264('libmp3lame', 'libx264');
             $h264->setKiloBitrate($size['bitrate']);
+            $h264->setAudioKiloBitrate($size['audio-bitrate']);
             $h264->on('progress', $progressFunc);
             $webm = new WebM();
             $webm->setKiloBitrate($size['bitrate']);
+            $webm->setAudioKiloBitrate($size['audio-bitrate']);
             $webm->on('progress', $progressFunc);
             $ogg = new Ogg();
             $ogg->setKiloBitrate($size['bitrate']);
+            $ogg->setAudioKiloBitrate($size['audio-bitrate']);
             $ogg->on('progress', $progressFunc);
 
             // Resize and encode the video
