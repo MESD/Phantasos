@@ -15,6 +15,10 @@ class MediaTypes
     const AUDIO = 'audio';
     const DOCUMENT = 'document';
     const PDF = 'pdf';
+    const WORD = 'word';
+    const EXCEL = 'excel';
+    const POWERPOINT = 'powerpoint';
+    const OTHER = 'other';
     const IMAGE = 'image';
     const UNKNOWN = 'unknown';
 }

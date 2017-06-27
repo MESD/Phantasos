@@ -42,6 +42,14 @@ services:
             - @logger
         tags:
             - { name: phantasos.tag.processor }
+    phantasos.word_processor:
+        class: Component\Processor\Processors\WordProcessor
+        tags:
+            - { name: phantasos.tag.processor }
+    phantasos.excel_processor:
+        class: Component\Processor\Processors\ExcelProcessor
+        tags:
+            - { name: phantasos.tag.processor }
     phantasos.processor:
         class: Component\Processor\ProcessorConsumer
         arguments:
