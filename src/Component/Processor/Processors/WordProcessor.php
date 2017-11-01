@@ -24,8 +24,6 @@ class WordProcessor extends AbstractProcessor
     public function getSupportedTypes()
     {
         return array(
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.ms-word.document.macroEnabled.12',
             'application/msword'
         );
     }
